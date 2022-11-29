@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.engine.base import Engine
+from sqlalchemy.orm import Session
 import os
 from urllib.parse import quote_plus
 
@@ -13,12 +14,18 @@ class ORMSettings(ISettings):
     DB_NAME = os.getenv('DB_NAME', '')
 
     DB_URL = f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_ADDRESS}/{DB_NAME}'
-    DB_ENGINE = create_engine(DB_URL)
+
+    @classmethod
+    def get_session(cls):
+        return Session(cls.get_engine())
 
     @classmethod
     def get_engine(cls) -> Engine:
-        return cls.DB_ENGINE
+        return create_engine(cls.get_uri())
 
     @classmethod
     def get_uri(cls) -> str:
         return cls.DB_URL
+
+
+settings: ORMSettings = ORMSettings()
