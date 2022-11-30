@@ -8,7 +8,8 @@ from funds.app.forms.labels.forms import LabelForm
 from funds.orm.base import HubLabels
 
 
-class PasswordBase:
+class PasswordBase:  # Add IBase to defi-head-core
+    _session: Session = None
 
     @staticmethod
     def _get_salt(length=16) -> str:
@@ -22,11 +23,14 @@ class PasswordBase:
             100_000
         ).hex()
 
+    def _validate_password(self, password: str, hashed_password: str) -> bool:
+        salt, hash_ = hashed_password.split('$')
+        return self._hash_password(password=password, salt=salt) == hash_
+
 
 class LabelBase(PasswordBase):
-    _session: Session = None
 
-    def _create_label(self, label: LabelForm) -> str:
+    def _create_label(self, label: LabelForm) -> HubLabels:
         salt: str = self._get_salt()
         hashed_password: str = self._hash_password(password=label.password, salt=salt)
         model: HubLabels = HubLabels(
@@ -35,7 +39,18 @@ class LabelBase(PasswordBase):
         )
         self._session.add(model)
         self._session.commit()
-        return f"Label {model.h_label_name} successfully created"
+        return model
 
     def _get_label_by_name(self, label: str) -> HubLabels:
-        return self._session.query(HubLabels).filter_by(h_label_name=label).first()
+        return self._session.query(
+            HubLabels
+        ).filter_by(
+            h_label_name=label
+        ).first()
+
+    def _get_label_by_id(self, id_: str) -> HubLabels:
+        return self._session.query(
+            HubLabels
+        ).filter_by(
+            h_label_id=id_
+        ).first()
