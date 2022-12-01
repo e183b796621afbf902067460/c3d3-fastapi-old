@@ -1,18 +1,18 @@
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
-from fastapi import Depends, HTTPException, status, Request
+from fastapi import Depends, HTTPException, status
 from fastapi.responses import RedirectResponse
 
-from funds.orm.cfg.engine import settings
-from funds.app.base.labels.base import LabelBase
-from funds.app.forms.labels.forms import LabelForm
+from src.funds.orm.cfg.engine import settings
+from src.funds.app.services.funds.service import LabelBase
+from src.funds.app.forms.funds.forms import LabelForm
 
 
 router = InferringRouter()
 
 
 @cbv(router=router)
-class LabelsCBV(LabelBase):
+class LabelCBV(LabelBase):
     _session = Depends(settings.get_session)
 
     @router.post("/sign-up")
@@ -26,7 +26,7 @@ class LabelsCBV(LabelBase):
         model = self._create_label(label=label)
 
         return RedirectResponse(
-            f'/account/{model.h_label_name}?id_={model.h_label_id}',
+            f'/account/{model.h_label_name}',
             status_code=status.HTTP_302_FOUND
         )
 
@@ -44,13 +44,13 @@ class LabelsCBV(LabelBase):
                 detail='Wrong password, try again'
             )
         return RedirectResponse(
-            f'/account/{db_label.h_label_name}?id_={db_label.h_label_id}',
+            f'/account/{db_label.h_label_name}',
             status_code=status.HTTP_302_FOUND
         )
 
     @router.get("/account/{label}")
-    def on_get__label_account(self, req: Request):
-        db_label = self._get_label_by_id(id_=req.query_params.get('id_'))
+    def on_get__label_account(self, label: str):
+        db_label = self._get_label_by_name(label=label)
         if not db_label:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,

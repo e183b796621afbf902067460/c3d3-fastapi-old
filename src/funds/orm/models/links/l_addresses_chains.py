@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, ForeignKey, Text
 
-from funds.orm.base.main import Base
+from src.funds.orm.base.main import Base
 
 
 class LinkAddressesChains(Base):

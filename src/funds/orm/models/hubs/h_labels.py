@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, Text, DateTime
 from sqlalchemy.sql import func
 
-from funds.orm.base.main import Base
+from src.funds.orm.base.main import Base
 
 
 class HubLabels(Base):

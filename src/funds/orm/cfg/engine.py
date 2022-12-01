@@ -17,7 +17,11 @@ class ORMSettings(ISettings):
 
     @classmethod
     def get_session(cls):
-        return Session(cls.get_engine())
+        s = Session(cls.get_engine())
+        try:
+            yield s
+        finally:
+            s.close()
 
     @classmethod
     def get_engine(cls) -> Engine:

@@ -1,5 +1,5 @@
-from funds.orm.cfg.engine import ORMSettings
-from funds.orm.base.main import Base
+from src.funds.orm.cfg.engine import ORMSettings
+from src.funds.orm.base.main import Base
 
 from sqlalchemy_utils import database_exists
 

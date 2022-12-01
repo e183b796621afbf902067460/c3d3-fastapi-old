@@ -4,8 +4,8 @@ import random
 import string
 import hashlib
 
-from funds.app.forms.labels.forms import LabelForm
-from funds.orm.base import HubLabels
+from src.funds.app.forms.funds.forms import LabelForm
+from src.funds.orm.base import HubLabels
 
 
 class PasswordBase:  # Add IBase to defi-head-core
