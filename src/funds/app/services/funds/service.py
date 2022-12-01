@@ -1,56 +1,118 @@
 from sqlalchemy.orm import Session
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+from jose import jwt, JWTError
+from pydantic import ValidationError
 
-import random
-import string
-import hashlib
+from passlib.hash import bcrypt
+import datetime
+from datetime import timedelta
 
-from src.funds.app.forms.funds.forms import LabelForm
-from src.funds.orm.base import HubLabels
+from src.funds.orm.cfg.engine import ORMSettings
+from src.cfg.settings import settings
+from src.funds.orm import base
+from src.funds.app import schemas
 
 
-class PasswordBase:  # Add IBase to defi-head-core
-    _session: Session = None
+oauth2: OAuth2PasswordBearer = OAuth2PasswordBearer(tokenUrl='/sign-in')
+
+
+class FundService:
+
+    def __init__(self, session: Session = Depends(ORMSettings.get_session)):
+        self._session: Session = session
 
     @staticmethod
-    def _get_salt(length=16) -> str:
-        return ''.join(random.choice(string.ascii_letters) for _ in range(length))
+    def _hash_password(plain_password: str) -> str:
+        return bcrypt.hash(secret=plain_password)
 
-    def _hash_password(self, password: str, salt: str = None) -> str:
-        return hashlib.pbkdf2_hmac(
-            'sha256',
-            password.encode(),
-            salt.encode() if salt else self._get_salt(),
-            100_000
-        ).hex()
+    @staticmethod
+    def _verify_password(plain_password: str, hashed_password: str) -> bool:
+        return bcrypt.verify(secret=plain_password, hash=hashed_password)
 
-    def _validate_password(self, password: str, hashed_password: str) -> bool:
-        salt, hash_ = hashed_password.split('$')
-        return self._hash_password(password=password, salt=salt) == hash_
-
-
-class LabelBase(PasswordBase):
-
-    def _create_label(self, label: LabelForm) -> HubLabels:
-        salt: str = self._get_salt()
-        hashed_password: str = self._hash_password(password=label.password, salt=salt)
-        model: HubLabels = HubLabels(
-            h_label_name=label.name,
-            h_label_password=f'{salt}${hashed_password}'
+    @staticmethod
+    def _create_jwt_token(h_label: base.HubLabels) -> schemas.funds.TokenSchema:
+        h_label_schema = schemas.funds.FundORMDeserializeSchema.from_orm(h_label)
+        utcnow = datetime.datetime.utcnow()
+        payload = {
+            'iat': utcnow,
+            'nbf': utcnow,
+            'exp': utcnow + timedelta(seconds=settings.JWT_EXPIRES),
+            'sub': str(h_label_schema.h_label_id),
+            'user': h_label_schema.dict(),
+        }
+        jwt_token = jwt.encode(
+            claims=payload,
+            key=settings.JWT_SECRET,
+            algorithm=settings.JWT_ALGORITHM
         )
-        self._session.add(model)
+        return schemas.funds.TokenSchema(access_token=jwt_token)
+
+    @staticmethod
+    def _verify_jwt_token(jwt_token: str) -> schemas.funds.FundORMSerializeSchema:
+        try:
+            payload = jwt.decode(
+                token=jwt_token,
+                key=settings.JWT_SECRET,
+                algorithms=[
+                    settings.JWT_ALGORITHM
+                ]
+            )
+        except JWTError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail='Unverified JWT credentials',
+                headers={
+                    'WWW-Authenticate': 'Bearer'
+                }
+            )
+        try:
+            fund = schemas.funds.FundORMSerializeSchema.parse_obj(payload.get('user'))
+        except ValidationError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail='Unverified credentials'
+            )
+        return fund
+
+    def _get_user_by_username(self, username: str) -> base.HubLabels:
+        return self._session.query(base.HubLabels).filter_by(h_label_name=username).first()
+
+    @classmethod
+    def get_user_by_jwt_token(cls, jwt_token: str = Depends(oauth2)) -> schemas.funds.FundORMSerializeSchema:
+        return cls._verify_jwt_token(jwt_token=jwt_token)
+
+    def on_post__label_sign_up(self, fund_create_schema: schemas.funds.FundCreateSchema) -> schemas.funds.TokenSchema:
+        h_label: base.HubLabels = base.HubLabels(
+            h_label_name=fund_create_schema.username,
+            h_label_password=self._hash_password(
+                plain_password=fund_create_schema.password
+            )
+        )
+        if self._get_user_by_username(username=fund_create_schema.username):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Fund already registered, try to sign-in'
+            )
+        self._session.add(instance=h_label)
         self._session.commit()
-        return model
+        return self._create_jwt_token(h_label=h_label)
 
-    def _get_label_by_name(self, label: str) -> HubLabels:
-        return self._session.query(
-            HubLabels
-        ).filter_by(
-            h_label_name=label
-        ).first()
-
-    def _get_label_by_id(self, id_: str) -> HubLabels:
-        return self._session.query(
-            HubLabels
-        ).filter_by(
-            h_label_id=id_
-        ).first()
+    def on_post__label_sign_in(self, oauth2_: OAuth2PasswordRequestForm) -> schemas.funds.TokenSchema:
+        h_label: base.HubLabels = self._get_user_by_username(
+            username=oauth2_.username
+        )
+        if not h_label:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Incorrect fund's label"
+            )
+        if not self._verify_password(
+            plain_password=oauth2_.password,
+            hashed_password=h_label.h_label_password
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect fund's password"
+            )
+        return self._create_jwt_token(h_label=h_label)
