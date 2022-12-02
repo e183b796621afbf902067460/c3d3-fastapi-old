@@ -30,6 +30,3 @@ class ORMSettings(ISettings):
     @classmethod
     def get_uri(cls) -> str:
         return cls.DB_URL
-
-
-settings: ORMSettings = ORMSettings()

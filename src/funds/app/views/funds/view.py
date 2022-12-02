@@ -6,6 +6,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from src.funds.app import schemas
 from src.funds.app.services.funds.service import FundService
 
+
 router = InferringRouter()
 
 
