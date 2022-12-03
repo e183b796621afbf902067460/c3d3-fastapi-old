@@ -1,4 +1,4 @@
-from src.funds.app.schemas.funds.schema import (
-    FundSchema, FundCreateSchema, FundORMSerializeSchema,
-    TokenSchema, FundORMDeserializeSchema
+from src.funds.app.schemas.labels.schema import (
+    LabelSchema, LabelCreateSchema, LabelORMSerializeSchema,
+    TokenSchema, LabelORMDeserializeSchema
 )

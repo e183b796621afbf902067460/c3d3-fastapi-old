@@ -1,20 +1,20 @@
 from pydantic import BaseModel
 
 
-class FundSchema(BaseModel):
+class LabelSchema(BaseModel):
     username: str
 
 
-class FundCreateSchema(FundSchema):
+class LabelCreateSchema(LabelSchema):
     password: str
 
 
-class FundORMSerializeSchema(BaseModel):
+class LabelORMSerializeSchema(BaseModel):
     h_label_id: int
     h_label_name: str
 
 
-class FundORMDeserializeSchema(FundORMSerializeSchema):
+class LabelORMDeserializeSchema(LabelORMSerializeSchema):
     class Config:
         orm_mode = True
 

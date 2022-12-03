@@ -1,1 +1,1 @@
-from src.funds.app.schemas import funds
+from src.funds.app.schemas import labels

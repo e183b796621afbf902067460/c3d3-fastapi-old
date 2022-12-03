@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import jwt, JWTError
 from pydantic import ValidationError
@@ -17,7 +17,7 @@ from src.funds.app import schemas
 oauth2: OAuth2PasswordBearer = OAuth2PasswordBearer(tokenUrl='/sign-in')
 
 
-class FundService:
+class LabelService:
 
     def __init__(self, session: Session = Depends(ORMSettings.get_session)):
         self._session: Session = session
@@ -31,8 +31,8 @@ class FundService:
         return bcrypt.verify(secret=plain_password, hash=hashed_password)
 
     @staticmethod
-    def _create_jwt_token(h_label: base.HubLabels) -> schemas.funds.TokenSchema:
-        h_label_schema = schemas.funds.FundORMDeserializeSchema.from_orm(h_label)
+    def _create_jwt_token(h_label: base.HubLabels) -> schemas.labels.TokenSchema:
+        h_label_schema = schemas.labels.LabelORMDeserializeSchema.from_orm(h_label)
         utcnow = datetime.datetime.utcnow()
         payload = {
             'iat': utcnow,
@@ -46,10 +46,10 @@ class FundService:
             key=settings.JWT_SECRET,
             algorithm=settings.JWT_ALGORITHM
         )
-        return schemas.funds.TokenSchema(access_token=jwt_token)
+        return schemas.labels.TokenSchema(access_token=jwt_token)
 
     @staticmethod
-    def _verify_jwt_token(jwt_token: str) -> schemas.funds.FundORMSerializeSchema:
+    def _verify_jwt_token(jwt_token: str) -> schemas.labels.LabelORMSerializeSchema:
         try:
             payload = jwt.decode(
                 token=jwt_token,
@@ -67,7 +67,7 @@ class FundService:
                 }
             )
         try:
-            fund = schemas.funds.FundORMSerializeSchema.parse_obj(payload.get('user'))
+            fund = schemas.labels.LabelORMSerializeSchema.parse_obj(payload.get('user'))
         except ValidationError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -79,10 +79,10 @@ class FundService:
         return self._session.query(base.HubLabels).filter_by(h_label_name=username).first()
 
     @classmethod
-    def get_user_by_jwt_token(cls, jwt_token: str = Depends(oauth2)) -> schemas.funds.FundORMSerializeSchema:
+    def get_user_by_jwt_token(cls, jwt_token: str = Depends(oauth2)) -> schemas.labels.LabelORMSerializeSchema:
         return cls._verify_jwt_token(jwt_token=jwt_token)
 
-    def on_post__label_sign_up(self, fund_create_schema: schemas.funds.FundCreateSchema) -> schemas.funds.TokenSchema:
+    def on_post__label_sign_up(self, fund_create_schema: schemas.labels.LabelCreateSchema) -> schemas.labels.TokenSchema:
         h_label: base.HubLabels = base.HubLabels(
             h_label_name=fund_create_schema.username,
             h_label_password=self._hash_password(
@@ -98,7 +98,7 @@ class FundService:
         self._session.commit()
         return self._create_jwt_token(h_label=h_label)
 
-    def on_post__label_sign_in(self, oauth2_: OAuth2PasswordRequestForm) -> schemas.funds.TokenSchema:
+    def on_post__label_sign_in(self, oauth2_: OAuth2PasswordRequestForm) -> schemas.labels.TokenSchema:
         h_label: base.HubLabels = self._get_user_by_username(
             username=oauth2_.username
         )
@@ -116,3 +116,6 @@ class FundService:
                 detail="Incorrect fund's password"
             )
         return self._create_jwt_token(h_label=h_label)
+
+    def on_get__label_sign_in(self, request: Request):
+        pass
