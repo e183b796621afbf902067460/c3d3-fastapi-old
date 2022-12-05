@@ -33,7 +33,7 @@ class LabelCBV:
     @router.post(
         "/sign-up",
         response_model=schemas.labels.LabelORMSchema,
-        status_code=status.HTTP_200_OK,
+        status_code=status.HTTP_201_CREATED,
     )
     def on_post__label_sign_up(self, oauth2_: OAuth2PasswordRequestForm = Depends(), service: LabelService = Depends()):
         label = service.on_post__label_sign_up(label=oauth2_.username, password=oauth2_.password)
@@ -42,4 +42,12 @@ class LabelCBV:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail='Label already exist'
             )
+        return label
+
+    @router.get(
+        '/account',
+        response_model=schemas.labels.LabelORMSchema,
+        status_code=status.HTTP_200_OK
+    )
+    def on_get__label_account(self, label: Depends(LabelService.current_label)):
         return label
