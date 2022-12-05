@@ -17,7 +17,7 @@ class LabelSignUpSchema(BaseModel):
     password: str = Field(..., min_length=6, max_length=24)
 
 
-class LabelORMlSchema(BaseModel):
+class LabelORMSchema(BaseModel):
     h_label_id: int
     h_label_name: str
 
