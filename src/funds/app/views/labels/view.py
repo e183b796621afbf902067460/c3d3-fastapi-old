@@ -1,6 +1,6 @@
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
-from fastapi import Depends, status
+from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
 from src.funds.app import schemas
@@ -27,7 +27,16 @@ class LabelCBV:
         status_code=status.HTTP_200_OK,
     )
     def on_post__label_sign_in(self, oauth2_: OAuth2PasswordRequestForm = Depends(), service: LabelService = Depends()):
-        return service.on_post__label_sign_in(oauth2_=oauth2_)
+        label = service.on_post__label_sign_in(label=oauth2_.username, password=oauth2_.password)
+        if not label:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Incorrect label or password'
+            )
+        return {
+            'access_token': service.create_access_token(id_=label.h_label_id),
+            'refresh_token': service.create_refresh_token(id_=label.h_label_id)
+        }
 
     @router.get(
         "/account",
