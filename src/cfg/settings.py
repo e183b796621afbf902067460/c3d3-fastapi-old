@@ -1,4 +1,5 @@
 from pydantic import BaseSettings
+from pathlib import Path
 
 
 class AppSettings(BaseSettings):
@@ -8,6 +9,8 @@ class AppSettings(BaseSettings):
     JWT_SECRET: str = '!settings'
     JWT_ALGORITHM: str = 'HS256'
     JWT_EXPIRES: int = 3600
+
+    BASE_PATH = Path(__file__[:-15]).resolve()
 
 
 settings: AppSettings = AppSettings()

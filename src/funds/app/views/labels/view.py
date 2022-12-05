@@ -1,6 +1,6 @@
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
-from fastapi import Depends, status, Request
+from fastapi import Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from src.funds.app import schemas
@@ -35,10 +35,3 @@ class LabelCBV:
     )
     def on_get__label_account(self, fund: schemas.labels.LabelORMSerializeSchema = Depends(LabelService.get_user_by_jwt_token)):
         return fund
-
-    @router.get(
-        '/sign-in',
-        status_code=status.HTTP_200_OK
-    )
-    def on_get__label_sign_in(self, request: Request, service: LabelService = Depends()):
-        pass
