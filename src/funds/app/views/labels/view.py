@@ -14,14 +14,6 @@ router = InferringRouter()
 class LabelCBV:
 
     @router.post(
-        "/sign-up",
-        response_model=schemas.labels.TokenSchema,
-        status_code=status.HTTP_201_CREATED
-    )
-    def on_post__label_sign_up(self, fund_create_schema: schemas.labels.LabelCreateSchema, service: LabelService = Depends()):
-        return service.on_post__label_sign_up(fund_create_schema=fund_create_schema)
-
-    @router.post(
         "/sign-in",
         response_model=schemas.labels.TokenSchema,
         status_code=status.HTTP_200_OK,
@@ -38,9 +30,16 @@ class LabelCBV:
             'refresh_token': service.create_refresh_token(id_=label.h_label_id)
         }
 
-    @router.get(
-        "/account",
-        response_model=schemas.labels.LabelORMSerializeSchema
+    @router.post(
+        "/sign-up",
+        response_model=schemas.labels.LabelORMSchema,
+        status_code=status.HTTP_200_OK,
     )
-    def on_get__label_account(self, fund: schemas.labels.LabelORMSerializeSchema = Depends(LabelService.get_user_by_jwt_token)):
-        return fund
+    def on_post__label_sign_up(self, oauth2_: OAuth2PasswordRequestForm = Depends(), service: LabelService = Depends()):
+        label = service.on_post__label_sign_up(label=oauth2_.username, password=oauth2_.password)
+        if not label:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Label already exist'
+            )
+        return label
