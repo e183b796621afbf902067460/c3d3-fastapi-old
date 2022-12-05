@@ -4,7 +4,7 @@ from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
 from src.funds.app import schemas
-from src.funds.app.services.labels.service import LabelService
+from src.funds.app.services.labels.service import LabelService, current_label
 
 
 router = InferringRouter()
@@ -49,5 +49,5 @@ class LabelCBV:
         response_model=schemas.labels.LabelORMSchema,
         status_code=status.HTTP_200_OK
     )
-    def on_get__label_account(self, label: Depends(LabelService.current_label)):
+    def on_get__label_account(self, label: schemas.labels.LabelORMSchema = Depends(current_label)):
         return label
