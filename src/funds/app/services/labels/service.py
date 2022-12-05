@@ -15,23 +15,22 @@ from src.funds.orm import base
 from src.funds.app import schemas
 
 
-oauth2: OAuth2PasswordBearer = OAuth2PasswordBearer(tokenUrl=f'{settings.API_V1}/funds/labels/sign-in')
-
-
 class LabelService:
 
     def __init__(self, session: Session = Depends(ORMSettings.get_session)):
         self._session: Session = session
-        self._crypto: CryptContext = CryptContext(schemes=['bcrypt'], deprecated='auto')
+
+        self.__oauth2: OAuth2PasswordBearer = OAuth2PasswordBearer(tokenUrl=f'{settings.API_V1}/funds/labels/sign-in')
+        self.__crypto: CryptContext = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
     def _get_label_by_name(self, label: str) -> Optional[base.HubLabels]:
         return self._session.query(base.HubLabels).filter_by(h_label_name=label).first()
 
     def _hash_password(self, plain_password: str) -> str:
-        return self._crypto.hash(secret=plain_password)
+        return self.__crypto.hash(secret=plain_password)
 
     def _verify_password(self, plain_password: str, hashed_password: str) -> bool:
-        return self._crypto.verify(secret=plain_password, hash=hashed_password)
+        return self.__crypto.verify(secret=plain_password, hash=hashed_password)
 
     @staticmethod
     def _create_token(id_: int, expire: int, secret: str) -> str:
@@ -62,5 +61,16 @@ class LabelService:
             return None
         if not self._verify_password(plain_password=password, hashed_password=h_label.h_label_password):
             return None
+        return schemas.labels.LabelORMSchema.from_orm(h_label)
+
+    def on_post__label_sign_up(self, label: str, password: str) -> Optional[schemas.labels.LabelORMSchema]:
+        if self._get_label_by_name(label=label):
+            return None
+        h_label: base.HubLabels = base.HubLabels(
+            h_label_name=label,
+            h_label_password=self._hash_password(plain_password=password)
+        )
+        self._session.add(h_label)
+        self._session.commit()
         return schemas.labels.LabelORMSchema.from_orm(h_label)
 
