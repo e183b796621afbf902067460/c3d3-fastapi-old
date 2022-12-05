@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 
 from src.cfg.settings import settings
-from src.funds.router import router as funds_flow_router
+from src.funds.app.router import router as funds_flow_router
 
 
 app: FastAPI = FastAPI(
