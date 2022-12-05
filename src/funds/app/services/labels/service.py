@@ -14,7 +14,7 @@ from src.funds.orm import base
 from src.funds.app import schemas
 
 
-oauth2: OAuth2PasswordBearer = OAuth2PasswordBearer(tokenUrl='/funds/sign-in')
+oauth2: OAuth2PasswordBearer = OAuth2PasswordBearer(tokenUrl=f'{settings.API_V1}/funds/labels/sign-in')
 
 
 class LabelService:

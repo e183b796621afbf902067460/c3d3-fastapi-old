@@ -1,17 +1,28 @@
 from fastapi import FastAPI, status
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 
-from src.funds.app.views.labels.view import router as funds_router
-from src.funds.app.views.wallets.view import router as wallets_router
+from src.cfg.settings import settings
+from src.funds.router import router as funds_flow_router
 
 
-app: FastAPI = FastAPI()
+app: FastAPI = FastAPI(
+    title=settings.PROJECT_NAME,
+    openapi_url=f'{settings.API_V1}/openapi.json'
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.BACKEND_CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 
 @app.exception_handler(status.HTTP_401_UNAUTHORIZED)
 def redirect(*args, **kwargs):
-    return RedirectResponse(url='/funds/sign-in')
+    return RedirectResponse(url=f'{settings.API_V1}/funds/labels/sign-in')
 
 
-app.include_router(funds_router, prefix='/funds', tags=['Auth'])
-app.include_router(wallets_router, prefix='/wallets', tags=['Wallets'])
+app.include_router(funds_flow_router, prefix=settings.API_V1)
