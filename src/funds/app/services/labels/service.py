@@ -1,14 +1,13 @@
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
-from jose import jwt, JWTError
+from fastapi.security import OAuth2PasswordBearer
+from jose import jwt
 from pydantic import ValidationError
 
 from passlib.context import CryptContext
 import datetime
 from datetime import timedelta
 from typing import Optional
-from uuid import UUID
 
 from src.funds.orm.cfg.engine import ORMSettings
 from src.cfg.settings import settings
@@ -27,9 +26,6 @@ class LabelService:
 
     def _get_label_by_name(self, label: str) -> Optional[base.HubLabels]:
         return self._session.query(base.HubLabels).filter_by(h_label_name=label).first()
-
-    def _get_label_by_id(self, id_: int) -> Optional[base.HubLabels]:
-        return self._session.query(base.HubLabels).filter_by(h_label_id=id_).first()
 
     def _hash_password(self, plain_password: str) -> str:
         return self.__crypto.hash(secret=plain_password)
@@ -60,36 +56,6 @@ class LabelService:
             secret=settings.JWT_REFRESH_SECRET_KEY
         )
 
-    def current_label(self, jwt_: str = Depends(oauth2)) -> schemas.labels.LabelORMSchema:
-        try:
-            payload = jwt.decode(
-                token=jwt_, key=settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
-            )
-            obj = schemas.labels.TokenPayloadSchema(**payload)
-        except (jwt.JWTError, ValidationError):
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail='Invalid credentials',
-                headers={
-                    "WWW-Authenticate": "Bearer"
-                }
-            )
-        if datetime.datetime.fromtimestamp(obj.exp) < datetime.datetime.utcnow():
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail='JWT expired',
-                headers={
-                    "WWW-Authenticate": "Bearer"
-                }
-            )
-        label = self._get_label_by_id(id_=obj.sub)
-        if not label:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Label doesn't exist"
-            )
-        return schemas.labels.LabelORMSchema.from_orm(label)
-
     def on_post__label_sign_in(self, label: str, password: str) -> Optional[schemas.labels.LabelORMSchema]:
         h_label: base.HubLabels = self._get_label_by_name(label=label)
         if not h_label:
@@ -108,3 +74,37 @@ class LabelService:
         self._session.add(h_label)
         self._session.commit()
         return schemas.labels.LabelORMSchema.from_orm(h_label)
+
+
+def current_label(jwt_: str = Depends(oauth2), session: Session = Depends(ORMSettings.get_session)) -> schemas.labels.LabelORMSchema:
+    def _get_label_by_id(id_: int) -> Optional[base.HubLabels]:
+        return session.query(base.HubLabels).filter_by(h_label_id=id_).first()
+
+    try:
+        payload = jwt.decode(
+            token=jwt_, key=settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
+        )
+        obj = schemas.labels.TokenPayloadSchema(**payload)
+    except (jwt.JWTError, ValidationError):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Invalid credentials',
+            headers={
+                "WWW-Authenticate": "Bearer"
+            }
+        )
+    if datetime.datetime.fromtimestamp(obj.exp) < datetime.datetime.utcnow():
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='JWT expired',
+            headers={
+                "WWW-Authenticate": "Bearer"
+            }
+        )
+    label = _get_label_by_id(id_=obj.sub)
+    if not label:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Label doesn't exist"
+        )
+    return schemas.labels.LabelORMSchema.from_orm(label)
