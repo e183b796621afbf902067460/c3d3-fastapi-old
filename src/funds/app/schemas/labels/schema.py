@@ -1,5 +1,4 @@
 from pydantic import BaseModel, Field
-from uuid import UUID
 
 
 class TokenSchema(BaseModel):
@@ -8,7 +7,7 @@ class TokenSchema(BaseModel):
 
 
 class TokenPayloadSchema(BaseModel):
-    sub: UUID = None
+    sub: int = None
     exp: int = None
 
 
