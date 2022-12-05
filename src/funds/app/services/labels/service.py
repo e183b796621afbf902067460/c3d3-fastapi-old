@@ -4,9 +4,10 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import jwt, JWTError
 from pydantic import ValidationError
 
-from passlib.hash import bcrypt
+from passlib.context import CryptContext
 import datetime
 from datetime import timedelta
+from typing import Optional
 
 from src.funds.orm.cfg.engine import ORMSettings
 from src.cfg.settings import settings
@@ -21,98 +22,45 @@ class LabelService:
 
     def __init__(self, session: Session = Depends(ORMSettings.get_session)):
         self._session: Session = session
+        self._crypto: CryptContext = CryptContext(schemes=['bcrypt'], deprecated='auto')
+
+    def _get_label_by_name(self, label: str) -> Optional[base.HubLabels]:
+        return self._session.query(base.HubLabels).filter_by(h_label_name=label).first()
+
+    def _hash_password(self, plain_password: str) -> str:
+        return self._crypto.hash(secret=plain_password)
+
+    def _verify_password(self, plain_password: str, hashed_password: str) -> bool:
+        return self._crypto.verify(secret=plain_password, hash=hashed_password)
 
     @staticmethod
-    def _hash_password(plain_password: str) -> str:
-        return bcrypt.hash(secret=plain_password)
-
-    @staticmethod
-    def _verify_password(plain_password: str, hashed_password: str) -> bool:
-        return bcrypt.verify(secret=plain_password, hash=hashed_password)
-
-    @staticmethod
-    def _create_jwt_token(h_label: base.HubLabels) -> schemas.labels.TokenSchema:
-        h_label_schema = schemas.labels.LabelORMDeserializeSchema.from_orm(h_label)
-        utcnow = datetime.datetime.utcnow()
+    def _create_token(id_: int, expire: int, secret: str) -> str:
+        expire_delta = datetime.datetime.utcnow() + timedelta(minutes=expire)
         payload = {
-            'iat': utcnow,
-            'nbf': utcnow,
-            'exp': utcnow + timedelta(seconds=settings.JWT_EXPIRES),
-            'sub': str(h_label_schema.h_label_id),
-            'user': h_label_schema.dict(),
+            'exp': expire_delta,
+            'sub': str(id_)
         }
-        jwt_token = jwt.encode(
-            claims=payload,
-            key=settings.JWT_SECRET,
-            algorithm=settings.JWT_ALGORITHM
+        return jwt.encode(payload, secret, settings.JWT_ALGORITHM)
+
+    def create_access_token(self, id_: int) -> str:
+        return self._create_token(
+            id_=id_,
+            expire=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES,
+            secret=settings.JWT_SECRET_KEY
         )
-        return schemas.labels.TokenSchema(access_token=jwt_token)
 
-    @staticmethod
-    def _verify_jwt_token(jwt_token: str) -> schemas.labels.LabelORMSerializeSchema:
-        try:
-            payload = jwt.decode(
-                token=jwt_token,
-                key=settings.JWT_SECRET,
-                algorithms=[
-                    settings.JWT_ALGORITHM
-                ]
-            )
-        except JWTError:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail='Unverified JWT credentials',
-                headers={
-                    'WWW-Authenticate': 'Bearer'
-                }
-            )
-        try:
-            fund = schemas.labels.LabelORMSerializeSchema.parse_obj(payload.get('user'))
-        except ValidationError:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail='Unverified credentials'
-            )
-        return fund
-
-    def _get_user_by_username(self, username: str) -> base.HubLabels:
-        return self._session.query(base.HubLabels).filter_by(h_label_name=username).first()
-
-    @classmethod
-    def get_user_by_jwt_token(cls, jwt_token: str = Depends(oauth2)) -> schemas.labels.LabelORMSerializeSchema:
-        return cls._verify_jwt_token(jwt_token=jwt_token)
-
-    def on_post__label_sign_up(self, fund_create_schema: schemas.labels.LabelCreateSchema) -> schemas.labels.TokenSchema:
-        h_label: base.HubLabels = base.HubLabels(
-            h_label_name=fund_create_schema.username,
-            h_label_password=self._hash_password(
-                plain_password=fund_create_schema.password
-            )
+    def create_refresh_token(self, id_: int) -> str:
+        return self._create_token(
+            id_=id_,
+            expire=settings.JWT_REFRESH_TOKEN_EXPIRE_MINUTES,
+            secret=settings.JWT_REFRESH_SECRET_KEY
         )
-        if self._get_user_by_username(username=fund_create_schema.username):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail='Fund already registered, try to sign-in'
-            )
-        self._session.add(instance=h_label)
-        self._session.commit()
-        return self._create_jwt_token(h_label=h_label)
 
-    def on_post__label_sign_in(self, oauth2_: OAuth2PasswordRequestForm) -> schemas.labels.TokenSchema:
-        h_label: base.HubLabels = self._get_user_by_username(
-            username=oauth2_.username
-        )
+    def on_post__label_sign_in(self, label: str, password: str) -> Optional[schemas.labels.LabelORMSchema]:
+        h_label: base.HubLabels = self._get_label_by_name(label=label)
         if not h_label:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Incorrect fund's label"
-            )
-        if not self._verify_password(
-            plain_password=oauth2_.password,
-            hashed_password=h_label.h_label_password
-        ):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Incorrect fund's password"
-            )
-        return self._create_jwt_token(h_label=h_label)
+            return None
+        if not self._verify_password(plain_password=password, hashed_password=h_label.h_label_password):
+            return None
+        return schemas.labels.LabelORMSchema.from_orm(h_label)
+
