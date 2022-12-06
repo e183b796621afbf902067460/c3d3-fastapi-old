@@ -10,6 +10,10 @@ class WalletORMSchema(BaseModel):
         orm_mode = True
 
 
+class FundORMSchema(WalletORMSchema):
+    l_address_label_chain_id: int
+
+
 class WalletAddSchema(BaseModel):
     address: str
     chain: str

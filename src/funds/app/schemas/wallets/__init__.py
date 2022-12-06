@@ -1,3 +1,3 @@
 from src.funds.app.schemas.wallets.schema import (
-    WalletORMSchema, WalletAddSchema
+    WalletORMSchema, WalletAddSchema, FundORMSchema
 )
