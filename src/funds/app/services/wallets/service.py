@@ -14,7 +14,7 @@ class WalletService:
     def __init__(self, session: Session = Depends(ORMSettings.get_session)):
         self._session: Session = session
 
-    def _get_all_wallets_by_label(self, label: str) -> List[schemas.wallets.WalletORMSchema]:
+    def _get_all_wallets_by_label(self, label: str) -> List[Optional[schemas.wallets.WalletORMSchema]]:
         wallets = self._session.query(
                 base.HubAddresses.h_address,
                 base.HubChains.h_network_name,
@@ -68,7 +68,7 @@ class WalletService:
     def _get_fund_by_wallet_and_label(self, label_id: int, wallet_id: int) -> base.LinkAddressesLabelsChains:
         return self._session.query(base.LinkAddressesLabelsChains).filter_by(l_address_chain_id=wallet_id, h_label_id=label_id).first()
 
-    def on_get__wallets_all(self, label: str) -> List[schemas.wallets.WalletORMSchema]:
+    def on_get__wallets_all(self, label: str) -> List[Optional[schemas.wallets.WalletORMSchema]]:
         return self._get_all_wallets_by_label(label=label)
 
     def on_post__wallets_add(self, address: str, chain: str, label: str) -> Optional[schemas.wallets.WalletORMSchema]:
@@ -112,7 +112,20 @@ class WalletService:
         return None
 
     def on_get__wallets_fetchone(self, wallet_id: int, label_id: int) -> Optional[schemas.wallets.WalletORMSchema]:
-        fund = self._get_fund_by_wallet_and_label(wallet_id=wallet_id, label_id=label_id)
-        return schemas.wallets.WalletORMSchema.from_orm(fund) if fund else fund
+        fund: base.LinkAddressesLabelsChains = self._get_fund_by_wallet_and_label(wallet_id=wallet_id, label_id=label_id)
+        if fund:
+            wallet: schemas.wallets.WalletORMSchema = self._get_wallet_by_fund(fund_id=fund.l_address_label_chain_id)
+            return schemas.wallets.WalletORMSchema.from_orm(wallet)
+        return fund
 
+    def on_delete__wallets_delete_fund(self, wallet_id: int, label_id: int) -> bool:
+        fund: base.LinkAddressesLabelsChains = self._get_fund_by_wallet_and_label(
+            wallet_id=wallet_id,
+            label_id=label_id
+        )
+        if fund:
+            self._session.query(base.LinkAddressesLabelsChains).filter_by(l_address_label_chain_id=fund.l_address_label_chain_id).delete()
+            self._session.commit()
+            return True
+        return False
 
