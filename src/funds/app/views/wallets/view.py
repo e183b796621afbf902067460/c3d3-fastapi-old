@@ -42,9 +42,17 @@ class WalletCBV:
         return wallet
 
     @router.get(
-        '/{wallet_address}',
+        '/{wallet_id}',
         status_code=status.HTTP_200_OK,
         response_model=schemas.wallets.WalletORMSchema
     )
-    def on_get__wallets_fetchone(self, wallet_address: str, service: WalletService = Depends(), label: schemas.labels.LabelORMSchema = Depends(current_label)):
-        ...
+    def on_get__wallets_fetchone(self, wallet_id: int, service: WalletService = Depends(), label: schemas.labels.LabelORMSchema = Depends(current_label)):
+        fund = service.on_get__wallets_fetchone(wallet_id=wallet_id, label_id=label.h_label_id)
+        if not fund:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='Fund not existed'
+            )
+        return fund
+
+
