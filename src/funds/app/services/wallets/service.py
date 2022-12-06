@@ -65,8 +65,36 @@ class WalletService:
     def _get_wallet_by_chain_and_address(self, address_id: int, chain_id: int) -> Optional[base.LinkAddressesChains]:
         return self._session.query(base.LinkAddressesChains).filter_by(h_address_id=address_id, h_chain_id=chain_id).first()
 
-    def _get_fund_by_wallet_and_label(self, label_id: int, wallet_id: int) -> base.LinkAddressesLabelsChains:
+    def _get_fund_by_wallet_id_and_label(self, label_id: int, wallet_id: int) -> base.LinkAddressesLabelsChains:
         return self._session.query(base.LinkAddressesLabelsChains).filter_by(l_address_chain_id=wallet_id, h_label_id=label_id).first()
+
+    def _get_fund_by_address_and_chain_and_label(self, label_id: int, wallet_address: str, network_name: str) -> schemas.wallets.FundORMSchema:
+        fund = self._session.query(
+            base.LinkAddressesLabelsChains.l_address_label_chain_id,
+            base.HubAddresses.h_address,
+            base.HubChains.h_network_name,
+            base.HubChains.h_network_endpoint
+        ).select_from(
+            base.LinkAddressesLabelsChains
+        ).join(
+            base.LinkAddressesChains,
+            base.LinkAddressesLabelsChains.l_address_chain_id == base.LinkAddressesChains.l_address_chain_id
+        ).join(
+            base.HubAddresses,
+            base.LinkAddressesChains.h_address_id == base.HubAddresses.h_address_id
+        ).join(
+            base.HubChains,
+            base.LinkAddressesChains.h_chain_id == base.HubChains.h_chain_id
+        ).join(
+            base.HubLabels,
+            base.LinkAddressesLabelsChains.h_label_id == base.HubLabels.h_label_id
+        ).filter(
+            base.HubLabels.h_label_id == label_id,
+            base.HubAddresses.h_address == wallet_address,
+            base.HubChains.h_network_name == network_name
+        ).first()
+
+        return schemas.wallets.FundORMSchema.from_orm(fund) if fund else fund
 
     def on_get__wallets_all(self, label: str) -> List[Optional[schemas.wallets.WalletORMSchema]]:
         return self._get_all_wallets_by_label(label=label)
@@ -97,7 +125,7 @@ class WalletService:
             )
             self._session.add(l_address_chain)
             self._session.commit()
-        l_address_label_chain: base.LinkAddressesLabelsChains = self._get_fund_by_wallet_and_label(
+        l_address_label_chain: base.LinkAddressesLabelsChains = self._get_fund_by_wallet_id_and_label(
             label_id=h_label.h_label_id,
             wallet_id=l_address_chain.l_address_chain_id
         )
@@ -111,16 +139,17 @@ class WalletService:
             return self._get_wallet_by_fund(fund_id=l_address_label_chain.l_address_label_chain_id)
         return None
 
-    def on_get__wallets_fetchone(self, wallet_id: int, label_id: int) -> Optional[schemas.wallets.WalletORMSchema]:
-        fund: base.LinkAddressesLabelsChains = self._get_fund_by_wallet_and_label(wallet_id=wallet_id, label_id=label_id)
-        if fund:
-            wallet: schemas.wallets.WalletORMSchema = self._get_wallet_by_fund(fund_id=fund.l_address_label_chain_id)
-            return schemas.wallets.WalletORMSchema.from_orm(wallet)
-        return fund
+    def on_get__wallets_get_fund(self, wallet_address: str, network_name: str, label_id: int) -> Optional[schemas.wallets.FundORMSchema]:
+        return self._get_fund_by_address_and_chain_and_label(
+            wallet_address=wallet_address,
+            network_name=network_name,
+            label_id=label_id
+        )
 
-    def on_delete__wallets_delete_fund(self, wallet_id: int, label_id: int) -> bool:
-        fund: base.LinkAddressesLabelsChains = self._get_fund_by_wallet_and_label(
-            wallet_id=wallet_id,
+    def on_delete__wallets_delete_fund(self, wallet_address: str, network_name: str, label_id: int) -> bool:
+        fund: schemas.wallets.FundORMSchema = self._get_fund_by_address_and_chain_and_label(
+            wallet_address=wallet_address,
+            network_name=network_name,
             label_id=label_id
         )
         if fund:
