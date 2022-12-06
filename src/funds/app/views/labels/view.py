@@ -35,7 +35,7 @@ class LabelCBV:
         response_model=schemas.labels.LabelORMSchema,
         status_code=status.HTTP_201_CREATED,
     )
-    def on_post__label_sign_up(self, oauth2_: OAuth2PasswordRequestForm = Depends(), service: LabelService = Depends()):
+    def on_post__label_sign_up(self, oauth2_: schemas.labels.LabelSignUpSchema, service: LabelService = Depends()):
         label = service.on_post__label_sign_up(label=oauth2_.username, password=oauth2_.password)
         if not label:
             raise HTTPException(
