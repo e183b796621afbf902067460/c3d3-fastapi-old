@@ -8,3 +8,8 @@ class WalletORMSchema(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class WalletAddSchema(BaseModel):
+    address: str
+    chain: str
