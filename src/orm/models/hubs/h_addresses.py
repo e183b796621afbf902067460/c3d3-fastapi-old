@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, Text, DateTime
 from sqlalchemy.sql import func
 
-from src.funds.orm.base.main import Base
+from src.orm.base.main import Base
 
 
 class HubAddresses(Base):

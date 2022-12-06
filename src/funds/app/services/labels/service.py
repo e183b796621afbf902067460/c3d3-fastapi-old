@@ -9,9 +9,9 @@ import datetime
 from datetime import timedelta
 from typing import Optional
 
-from src.funds.orm.cfg.engine import ORMSettings
+from src.orm.cfg.engine import ORMSettings
 from src.cfg.settings import settings
-from src.funds.orm import base
+from src.orm import base
 from src.funds.app import schemas
 
 
