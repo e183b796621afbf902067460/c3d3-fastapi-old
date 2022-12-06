@@ -111,4 +111,8 @@ class WalletService:
             return self._get_wallet_by_fund(fund_id=l_address_label_chain.l_address_label_chain_id)
         return None
 
+    def on_get__wallets_fetchone(self, wallet_id: int, label_id: int) -> Optional[schemas.wallets.WalletORMSchema]:
+        fund = self._get_fund_by_wallet_and_label(wallet_id=wallet_id, label_id=label_id)
+        return schemas.wallets.WalletORMSchema.from_orm(fund) if fund else fund
+
 

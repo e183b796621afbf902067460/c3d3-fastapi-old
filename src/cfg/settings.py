@@ -6,7 +6,7 @@ from typing import List
 
 
 class AppSettings(BaseSettings):
-    PROJECT_NAME: str = "DeFi Analytics Management"
+    PROJECT_NAME: str = "DeFi Management"
 
     API_V1: str = '/api/v1'
 
