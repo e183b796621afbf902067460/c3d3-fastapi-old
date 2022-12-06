@@ -1,12 +1,14 @@
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi import Depends, status, HTTPException
+from fastapi.responses import RedirectResponse
 
-from typing import List
+from typing import List, Optional
 
 from src.funds.app import schemas
 from src.funds.app.services.wallets.service import WalletService
 from src.funds.app.services.labels.service import current_label
+from src.cfg.settings import settings
 
 
 router = InferringRouter()
@@ -17,7 +19,7 @@ class WalletCBV:
 
     @router.get(
         '/all',
-        response_model=List[schemas.wallets.WalletORMSchema],
+        response_model=List[Optional[schemas.wallets.WalletORMSchema]],
         status_code=status.HTTP_200_OK
     )
     def on_get__wallets_all(self, label: schemas.labels.LabelORMSchema = Depends(current_label), service: WalletService = Depends()):
@@ -51,8 +53,22 @@ class WalletCBV:
         if not fund:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail='Fund not existed'
+                detail="Fund doesn't existed"
             )
         return fund
+
+    @router.delete(
+        '/{wallet_id}',
+        status_code=status.HTTP_202_ACCEPTED,
+        response_class=RedirectResponse
+    )
+    def on_delete__wallets_delete_fund(self, wallet_id: int, service: WalletService = Depends(), label: schemas.labels.LabelORMSchema = Depends(current_label)):
+        is_delete: bool = service.on_delete__wallets_delete_fund(wallet_id=wallet_id, label_id=label.h_label_id)
+        if is_delete:
+            return f'{settings.API_V1}/funds/wallets/all'
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Fund doesn't existed"
+        )
 
 
