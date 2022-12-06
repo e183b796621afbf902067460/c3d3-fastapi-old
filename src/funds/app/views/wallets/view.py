@@ -44,12 +44,16 @@ class WalletCBV:
         return wallet
 
     @router.get(
-        '/{wallet_id}',
+        '/{network_name}/{wallet_address}',
         status_code=status.HTTP_200_OK,
         response_model=schemas.wallets.WalletORMSchema
     )
-    def on_get__wallets_fetchone(self, wallet_id: int, service: WalletService = Depends(), label: schemas.labels.LabelORMSchema = Depends(current_label)):
-        fund = service.on_get__wallets_fetchone(wallet_id=wallet_id, label_id=label.h_label_id)
+    def on_get__wallets_get_fund(self, wallet_address: str, network_name: str, service: WalletService = Depends(), label: schemas.labels.LabelORMSchema = Depends(current_label)):
+        fund = service.on_get__wallets_get_fund(
+            wallet_address=wallet_address,
+            network_name=network_name,
+            label_id=label.h_label_id
+        )
         if not fund:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -58,12 +62,16 @@ class WalletCBV:
         return fund
 
     @router.delete(
-        '/{wallet_id}',
+        '/{network_name}/{wallet_address}',
         status_code=status.HTTP_202_ACCEPTED,
         response_class=RedirectResponse
     )
-    def on_delete__wallets_delete_fund(self, wallet_id: int, service: WalletService = Depends(), label: schemas.labels.LabelORMSchema = Depends(current_label)):
-        is_delete: bool = service.on_delete__wallets_delete_fund(wallet_id=wallet_id, label_id=label.h_label_id)
+    def on_delete__wallets_delete_fund(self, wallet_address: str, network_name: str, service: WalletService = Depends(), label: schemas.labels.LabelORMSchema = Depends(current_label)):
+        is_delete: bool = service.on_delete__wallets_delete_fund(
+            wallet_address=wallet_address,
+            network_name=network_name,
+            label_id=label.h_label_id
+        )
         if is_delete:
             return f'{settings.API_V1}/funds/wallets/all'
         raise HTTPException(
