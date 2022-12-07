@@ -3,7 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 
 from src.cfg.settings import settings
+
 from src.funds.app.router import router as funds_flow_router
+from src.instruments.app.router import router as instruments_flow_router
 
 
 app: FastAPI = FastAPI(
@@ -26,3 +28,4 @@ def redirect(*args, **kwargs):
 
 
 app.include_router(funds_flow_router, prefix=settings.API_V1)
+app.include_router(instruments_flow_router, prefix=settings.API_V1)
