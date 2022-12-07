@@ -10,6 +10,6 @@ class LinkProtocolsCategories(Base):
         'comment': "Protocol's Categories"
     }
 
-    l_protocol_category_id = Column(Integer, primary_key=True)  # PK
+    l_protocol_category_id = Column(Integer, primary_key=True)
     h_protocol_id = Column(Integer, ForeignKey('h_protocols.h_protocol_id'), nullable=False)
     h_protocol_category_id = Column(Integer, ForeignKey('h_protocols_categories.h_protocol_category_id'), nullable=False)

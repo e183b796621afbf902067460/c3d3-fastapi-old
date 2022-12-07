@@ -10,7 +10,7 @@ class LinkAddressesChains(Base):
         'comment': "Chain's Addresses"
     }
 
-    l_address_chain_id = Column(Integer, primary_key=True)  # PK
+    l_address_chain_id = Column(Integer, primary_key=True)
     h_address_id = Column(Integer, ForeignKey('h_addresses.h_address_id'), nullable=False)
     h_chain_id = Column(Integer, ForeignKey('h_chains.h_chain_id'), nullable=False)
 
