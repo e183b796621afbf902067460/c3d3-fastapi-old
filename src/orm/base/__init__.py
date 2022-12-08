@@ -7,6 +7,7 @@ from src.orm.models.hubs.h_protocols import HubProtocols
 from src.orm.models.links.l_addresses_chains import LinkAddressesChains
 from src.orm.models.links.l_addresses_labels_chains import LinkAddressesLabelsChains
 from src.orm.models.links.l_addresses_protocols_categories_chains import LinkAddressesProtocolsCategoriesChains
-from src.orm.models.links.l_addresses_protocols_categories_labels_chains import LinkAddressesProtocolsCategoriesLabelsChains
 from src.orm.models.links.l_protocols_categories import LinkProtocolsCategories
 from src.orm.models.links.l_protocols_categories_chains import LinkProtocolsCategoriesChains
+
+from src.orm.models.sats.l_addresses_protocols_categories_chains.s_addresses_protocols_categories_labels_chains import SatelliteAddressesProtocolsCategoriesLabelsChains
