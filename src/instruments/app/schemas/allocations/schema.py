@@ -1,19 +1,13 @@
-from pydantic import BaseModel
+from src.instruments.app.schemas.pools.schema import PoolORMSchema, PoolAddSchema, PoolDeleteSchema
 
 
-class WalletORMSchema(BaseModel):
-    h_address: str
-    h_network_name: str
-    h_network_endpoint: str
-
-    class Config:
-        orm_mode = True
+class AllocationORMSchema(PoolORMSchema):
+    pass
 
 
-class FundORMSchema(WalletORMSchema):
-    l_address_label_chain_id: int
+class AllocationAddSchema(PoolAddSchema):
+    pass
 
 
-class WalletAddSchema(BaseModel):
-    address: str
-    chain: str
+class AllocationDeleteSchema(PoolDeleteSchema):
+    pass

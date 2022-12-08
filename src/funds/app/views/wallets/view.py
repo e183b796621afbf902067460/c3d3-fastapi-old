@@ -2,6 +2,7 @@ from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi import Depends, status, HTTPException
 from fastapi.responses import RedirectResponse
+from web3 import Web3
 
 from typing import List, Optional
 
@@ -31,9 +32,14 @@ class WalletCBV:
         status_code=status.HTTP_201_CREATED
     )
     def on_post__wallets_add(self, wallet_add_schema: schemas.wallets.WalletAddSchema, label: schemas.labels.LabelORMSchema = Depends(current_label), service: WalletService = Depends()):
+        if not Web3.isChecksumAddress(wallet_add_schema.address):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Wallet address is not a valid checksum address'
+            )
         wallet: schemas.wallets.WalletORMSchema = service.on_post__wallets_add(
-            address=wallet_add_schema.address,
-            chain=wallet_add_schema.chain,
+            address=Web3.toChecksumAddress(wallet_add_schema.address),
+            chain=wallet_add_schema.chain.lower(),
             label=label.h_label_name
         )
         if not wallet:
@@ -49,9 +55,14 @@ class WalletCBV:
         response_model=schemas.wallets.WalletORMSchema
     )
     def on_get__wallets_get_fund(self, wallet_address: str, network_name: str, service: WalletService = Depends(), label: schemas.labels.LabelORMSchema = Depends(current_label)):
+        if not Web3.isChecksumAddress(wallet_address):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Wallet address is not a valid checksum address'
+            )
         fund = service.on_get__wallets_get_fund(
-            wallet_address=wallet_address,
-            network_name=network_name,
+            wallet_address=Web3.toChecksumAddress(wallet_address),
+            network_name=network_name.lower(),
             label_id=label.h_label_id
         )
         if not fund:
@@ -67,9 +78,14 @@ class WalletCBV:
         response_class=RedirectResponse
     )
     def on_delete__wallets_delete_fund(self, wallet_address: str, network_name: str, service: WalletService = Depends(), label: schemas.labels.LabelORMSchema = Depends(current_label)):
+        if not Web3.isChecksumAddress(wallet_address):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Wallet address is not a valid checksum address'
+            )
         is_delete: bool = service.on_delete__wallets_delete_fund(
-            wallet_address=wallet_address,
-            network_name=network_name,
+            wallet_address=Web3.toChecksumAddress(wallet_address),
+            network_name=network_name.lower(),
             label_id=label.h_label_id
         )
         if is_delete:

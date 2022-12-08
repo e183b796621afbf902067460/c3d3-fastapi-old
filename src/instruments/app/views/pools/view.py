@@ -2,6 +2,7 @@ from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi import Depends, status, HTTPException
 from fastapi.responses import RedirectResponse
+from web3 import Web3
 
 from typing import List, Optional
 
@@ -24,13 +25,18 @@ class PoolCBV:
         status_code=status.HTTP_201_CREATED
     )
     def on_post__pools_add_pool(self, network_name: str, wallet_address: str, pool_add_schema: schemas.pools.PoolAddSchema, label: funds_schemas.labels.LabelORMSchema = Depends(current_label), service: PoolService = Depends()):
+        if not Web3.isChecksumAddress(wallet_address) or not Web3.isChecksumAddress(pool_add_schema.address):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Invalid wallet or pool address'
+            )
         pool: schemas.pools.PoolORMSchema = service.on_post__pools_add_pool(
-            pool_address=pool_add_schema.address,
-            wallet_address=wallet_address,
-            chain=network_name,
+            pool_address=Web3.toChecksumAddress(pool_add_schema.address),
+            wallet_address=Web3.toChecksumAddress(wallet_address),
+            chain=network_name.lower(),
             label=label.h_label_name,
-            protocol=pool_add_schema.protocol,
-            protocol_category=pool_add_schema.protocol_category
+            protocol=pool_add_schema.protocol.lower(),
+            protocol_category=pool_add_schema.protocol_category.lower()
         )
         if not pool:
             raise HTTPException(
@@ -45,12 +51,17 @@ class PoolCBV:
         response_class=RedirectResponse
     )
     def on_delete__pools_delete_pool(self, wallet_address: str, network_name: str, pool_delete_schema: schemas.pools.PoolDeleteSchema, service: PoolService = Depends(), label: funds_schemas.labels.LabelORMSchema = Depends(current_label)):
+        if not Web3.isChecksumAddress(wallet_address) or not Web3.isChecksumAddress(pool_delete_schema.address):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Invalid wallet or pool address'
+            )
         is_delete: bool = service.on_delete__pools_delete_pool(
-            pool_address=pool_delete_schema.address,
-            protocol=pool_delete_schema.protocol,
-            protocol_category=pool_delete_schema.protocol_category,
-            chain=network_name,
-            wallet_address=wallet_address,
+            pool_address=Web3.toChecksumAddress(pool_delete_schema.address),
+            protocol=pool_delete_schema.protocol.lower(),
+            protocol_category=pool_delete_schema.protocol_category.lower(),
+            chain=network_name.lower(),
+            wallet_address=Web3.toChecksumAddress(wallet_address),
             label_id=label.h_label_id
         )
         if is_delete:

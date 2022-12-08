@@ -247,12 +247,14 @@ class PoolService:
             label_id: int,
             protocol: str,
             protocol_category: str
-    ):
+    ) -> bool:
         fund_id: int = self._get_fund_by_address_and_chain_and_label(
             label_id=label_id,
             wallet_address=wallet_address,
             network_name=chain
         ).l_address_label_chain_id
+        if not fund_id:
+            return False
 
         pool: base.LinkAddressesProtocolsCategoriesChains = self._get_pool_by_params(
             pool_address=pool_address,
