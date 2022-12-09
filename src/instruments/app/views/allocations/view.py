@@ -25,7 +25,7 @@ class AllocationCBV:
         status_code=status.HTTP_201_CREATED
     )
     def on_post__allocations_add_allocation(self, network_name: str, wallet_address: str, allocation_add_schema: schemas.allocations.AllocationAddSchema, label: funds_schemas.labels.LabelORMSchema = Depends(current_label), service: AllocationService = Depends()):
-        if not Web3.isChecksumAddress(wallet_address) or not Web3.isChecksumAddress(allocation_add_schema.address):
+        if not Web3.isAddress(wallet_address) or not Web3.isAddress(allocation_add_schema.address):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail='Invalid wallet or pool address'
@@ -36,7 +36,8 @@ class AllocationCBV:
             chain=network_name.lower(),
             label=label.h_label_name,
             protocol=allocation_add_schema.protocol.lower(),
-            protocol_category=allocation_add_schema.protocol_category.lower()
+            protocol_category=allocation_add_schema.protocol_category.lower(),
+            pool_name=allocation_add_schema.pool_name
         )
         if not allocation:
             raise HTTPException(
@@ -46,20 +47,30 @@ class AllocationCBV:
         return allocation
 
     @router.delete(
-        '/{network_name}/{wallet_address}',
+        '/{network_name}/{wallet_address}/{protocol}/{protocol_category}/{address}/{pool_name}',
         status_code=status.HTTP_202_ACCEPTED,
         response_class=RedirectResponse
     )
-    def on_delete__allocations_delete_allocation(self, wallet_address: str, network_name: str, allocation_delete_schema: schemas.allocations.AllocationDeleteSchema, service: AllocationService = Depends(), label: funds_schemas.labels.LabelORMSchema = Depends(current_label)):
-        if not Web3.isChecksumAddress(wallet_address) or not Web3.isChecksumAddress(allocation_delete_schema.address):
+    def on_delete__allocations_delete_allocation(
+            self,
+            wallet_address: str,
+            network_name: str,
+            protocol: str,
+            protocol_category: str,
+            address: str,
+            pool_name: str,
+            service: AllocationService = Depends(),
+            label: funds_schemas.labels.LabelORMSchema = Depends(current_label)
+    ):
+        if not Web3.isAddress(wallet_address) or not Web3.isAddress(address):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail='Invalid wallet or pool address'
             )
         is_delete: bool = service.on_delete__allocations_delete_allocation(
-            pool_address=Web3.toChecksumAddress(allocation_delete_schema.address),
-            protocol=allocation_delete_schema.protocol.lower(),
-            protocol_category=allocation_delete_schema.protocol_category.lower(),
+            pool_address=Web3.toChecksumAddress(address),
+            protocol=protocol.lower(),
+            protocol_category=protocol_category.lower(),
             chain=network_name.lower(),
             wallet_address=Web3.toChecksumAddress(wallet_address),
             label_id=label.h_label_id
