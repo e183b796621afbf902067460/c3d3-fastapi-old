@@ -50,6 +50,7 @@ class PoolService:
 
     def _get_pool_by_id(self, pool_id: int) -> Optional[schemas.pools.PoolORMSchema]:
         pool = self._session.query(
+            base.LinkAddressesChains.l_address_chain_name,
             base.HubAddresses.h_address,
             base.HubChains.h_network_name,
             base.HubChains.h_network_endpoint,
@@ -158,6 +159,7 @@ class PoolService:
     def on_post__pools_add_pool(
             self,
             pool_address: str,
+            pool_name: str,
             wallet_address: str,
             chain: str,
             label: str,
@@ -218,7 +220,9 @@ class PoolService:
         if not l_pool_address_chain:
             l_pool_address_chain: base.LinkAddressesChains = base.LinkAddressesChains(
                 h_address_id=h_pool_address.h_address_id,
-                h_chain_id=h_chain.h_chain_id
+                h_chain_id=h_chain.h_chain_id,
+                l_address_chain_name=pool_name
+
             )
             self._session.add(l_pool_address_chain)
             self._session.commit()
