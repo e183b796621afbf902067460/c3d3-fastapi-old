@@ -21,9 +21,7 @@ cd defi-fastapi/
 
 - Set the __BACKEND_CORS_ORIGINS__ variable in [settings.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/cfg/settings.py) to allow [frontend](https://github.com/e183b796621afbf902067460/defi-react), for local setup:
 ```python
-BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
-        "http://localhost:3000"
-    ]
+BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://localhost:3000"]
 ```
 
 - Set credentials in [engine.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/orm/cfg/engine.py), for local setup:
