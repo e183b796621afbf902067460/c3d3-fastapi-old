@@ -19,10 +19,8 @@ git clone https://github.com/e183b796621afbf902067460/defi-fastapi.git
 cd defi-fastapi/
 ```
 
-- Set the __SERVER_HOST__, __SERVER_PORT__ and __BACKEND_CORS_ORIGINS__ variables in [settings.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/cfg/settings.py), for local setup:
+- Set the __BACKEND_CORS_ORIGINS__ variable in [settings.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/cfg/settings.py) to allow [frontend](https://github.com/e183b796621afbf902067460/defi-react), for local setup:
 ```python
-SERVER_HOST: str = '127.0.0.1'
-SERVER_PORT: int = 8080
 BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
         "http://localhost:3000"
     ]
