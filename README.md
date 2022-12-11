@@ -49,7 +49,7 @@ pip3 install -r requirements.txt
 
 - Init database schema:
 ```
-pytest tests/init.py
+pytest tests/run.py
 ```
 
 - Run FastAPI server using `uvicorn`:
