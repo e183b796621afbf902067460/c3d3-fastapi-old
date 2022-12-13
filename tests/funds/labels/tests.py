@@ -13,8 +13,8 @@ class TestLabelCBV:
     def setup_class(cls):
         cls.oauth2_ = [
             {
-                'username': cls._str_generator(size=random.randint(6, 18)),
-                'password': cls._str_generator(size=random.randint(6, 18))
+                'username': cls.str_generator(size=random.randint(6, 18)),
+                'password': cls.str_generator(size=random.randint(6, 18))
             }
             for _ in range(random.randint(8, 32))
         ]
@@ -24,7 +24,7 @@ class TestLabelCBV:
         ...
 
     @staticmethod
-    def _str_generator(size: int, chars: str = string.ascii_letters):
+    def str_generator(size: int, chars: str = string.ascii_letters):
         return ''.join(random.choice(chars) for _ in range(size))
 
     def test_on_post__label_sign_up(self, client):
@@ -51,5 +51,6 @@ class TestLabelCBV:
     def test_on_post__label_account(self, client, jwt_token):
         response = client.get(f'{settings.API_V1}/funds/labels/account', headers=jwt_token)
 
+        assert response.status_code == status.HTTP_200_OK
         assert isinstance(response.json()['h_label_id'], int)
         assert isinstance(response.json()['h_label_name'], str)
