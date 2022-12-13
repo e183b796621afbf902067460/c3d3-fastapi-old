@@ -145,13 +145,13 @@ def h_chains(session):
 def h_protocols(session):
     h_configs = [
         {
-            'h_protocol_name': 'Uniswap'
+            'h_protocol_name': 'uniswap'
         },
         {
-            'h_protocol_name': 'Curve'
+            'h_protocol_name': 'curve'
         },
         {
-            'h_protocol_name': 'Aave'
+            'h_protocol_name': 'aave'
         }
     ]
     h_protocols = [
@@ -168,13 +168,13 @@ def h_protocols(session):
 def h_protocols_categories(session):
     h_configs = [
         {
-            'h_protocol_category_name': 'DEX'
+            'h_protocol_category_name': 'dex'
         },
         {
-            'h_protocol_category_name': 'Lending'
+            'h_protocol_category_name': 'lending'
         },
         {
-            'h_protocol_category_name': 'Farming'
+            'h_protocol_category_name': 'farming'
         }
     ]
     h_protocols_categories = [
@@ -204,7 +204,7 @@ def l_protocols_categories(session, h_protocols, h_protocols_categories):
 def l_protocols_categories_chains(session, l_protocols_categories, h_chains):
     l_protocols_categories_chains = [
         base.LinkProtocolsCategoriesChains(
-            l_protocols_categories_chains=l_protocol_category.l_protocol_category_id,
+            l_protocol_category_id=l_protocol_category.l_protocol_category_id,
             h_chain_id=h_chain.h_chain_id
         ) for h_chain in h_chains for l_protocol_category in l_protocols_categories
     ]
