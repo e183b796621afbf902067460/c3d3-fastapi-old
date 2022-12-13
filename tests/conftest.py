@@ -14,6 +14,7 @@ from src.orm.cfg.engine import ORMSettings
 from src.cfg.settings import settings
 from src.funds.app.router import router as funds_flow_router
 from src.instruments.app.router import router as instruments_flow_router
+from src.orm import base
 
 
 def _create_authorization_header(client: TestClient, username: str, password: str):
@@ -107,3 +108,106 @@ def client(environment, session) -> Generator[TestClient, Any, None]:
 @pytest.fixture(scope='module')
 def jwt_token(client):
     return _get_authorization_header(client=client)
+
+
+@pytest.fixture(scope='module')
+def h_chains(session):
+    h_configs = [
+        {
+            'h_network_name': 'eth',
+            'h_network_id': 1,
+            'h_network_endpoint': 'eth.endpoint'
+        },
+        {
+            'h_network_name': 'bsc',
+            'h_network_id': 2,
+            'h_network_endpoint': 'bsc.endpoint'
+        },
+        {
+            'h_network_name': 'matic',
+            'h_network_id': 3,
+            'h_network_endpoint': 'matic.endpoint'
+        }
+    ]
+    h_chains = [
+        base.HubChains(
+            h_network_name=h_config['h_network_name'],
+            h_network_id=h_config['h_network_id'],
+            h_network_endpoint=h_config['h_network_endpoint']
+        ) for h_config in h_configs
+    ]
+    session.add_all(h_chains)
+    session.commit()
+    return h_chains
+
+
+@pytest.fixture(scope='module')
+def h_protocols(session):
+    h_configs = [
+        {
+            'h_protocol_name': 'Uniswap'
+        },
+        {
+            'h_protocol_name': 'Curve'
+        },
+        {
+            'h_protocol_name': 'Aave'
+        }
+    ]
+    h_protocols = [
+        base.HubProtocols(
+            h_protocol_name=h_config['h_protocol_name']
+        ) for h_config in h_configs
+    ]
+    session.add_all(h_protocols)
+    session.commit()
+    return h_protocols
+
+
+@pytest.fixture(scope='module')
+def h_protocols_categories(session):
+    h_configs = [
+        {
+            'h_protocol_category_name': 'DEX'
+        },
+        {
+            'h_protocol_category_name': 'Lending'
+        },
+        {
+            'h_protocol_category_name': 'Farming'
+        }
+    ]
+    h_protocols_categories = [
+        base.HubProtocolsCategories(
+            h_protocol_category_name=h_config['h_protocol_category_name']
+        ) for h_config in h_configs
+    ]
+    session.add_all(h_protocols_categories)
+    session.commit()
+    return h_protocols_categories
+
+
+@pytest.fixture(scope='module')
+def l_protocols_categories(session, h_protocols, h_protocols_categories):
+    l_protocols_categories = [
+        base.LinkProtocolsCategories(
+            h_protocol_id=h_protocol.h_protocol_id,
+            h_protocol_category_id=h_protocol_category.h_protocol_category_id
+        ) for h_protocol in h_protocols for h_protocol_category in h_protocols_categories
+    ]
+    session.add_all(l_protocols_categories)
+    session.commit()
+    return l_protocols_categories
+
+
+@pytest.fixture(scope='module')
+def l_protocols_categories_chains(session, l_protocols_categories, h_chains):
+    l_protocols_categories_chains = [
+        base.LinkProtocolsCategoriesChains(
+            l_protocols_categories_chains=l_protocol_category.l_protocol_category_id,
+            h_chain_id=h_chain.h_chain_id
+        ) for h_chain in h_chains for l_protocol_category in l_protocols_categories
+    ]
+    session.add_all(l_protocols_categories_chains)
+    session.commit()
+    return l_protocols_categories
