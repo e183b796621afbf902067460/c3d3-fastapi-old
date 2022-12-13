@@ -75,7 +75,7 @@ class WalletCBV:
     @router.delete(
         '/{network_name}/{wallet_address}',
         status_code=status.HTTP_202_ACCEPTED,
-        response_class=RedirectResponse
+        response_model=schemas.wallets.WalletDeleteSchema
     )
     def on_delete__wallets_delete_fund(self, wallet_address: str, network_name: str, service: WalletService = Depends(), label: schemas.labels.LabelORMSchema = Depends(current_label)):
         if not Web3.isAddress(wallet_address):
@@ -89,7 +89,7 @@ class WalletCBV:
             label_id=label.h_label_id
         )
         if is_delete:
-            return f'{settings.API_V1}/funds/wallets/all'
+            return schemas.wallets.WalletDeleteSchema(address=wallet_address, chain=network_name)
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Fund doesn't existed"
