@@ -17,3 +17,7 @@ class FundORMSchema(WalletORMSchema):
 class WalletAddSchema(BaseModel):
     address: str
     chain: str
+
+
+class WalletDeleteSchema(WalletAddSchema):
+    pass
