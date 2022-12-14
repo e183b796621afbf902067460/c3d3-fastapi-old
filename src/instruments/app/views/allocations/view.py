@@ -49,7 +49,7 @@ class AllocationCBV:
     @router.delete(
         '/{network_name}/{wallet_address}/{protocol}/{protocol_category}/{address}/{pool_name}',
         status_code=status.HTTP_202_ACCEPTED,
-        response_class=RedirectResponse
+        response_model=schemas.allocations.AllocationDeleteSchema
     )
     def on_delete__allocations_delete_allocation(
             self,
@@ -76,7 +76,12 @@ class AllocationCBV:
             label_id=label.h_label_id
         )
         if is_delete:
-            return f'{settings.API_V1}/funds/wallets/all'
+            return schemas.allocations.AllocationDeleteSchema(
+                address=Web3.toChecksumAddress(address),
+                protocol=protocol.lower(),
+                protocol_category=protocol_category.lower(),
+                pool_name=pool_name.lower()
+            )
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Allocation doesn't exist"
