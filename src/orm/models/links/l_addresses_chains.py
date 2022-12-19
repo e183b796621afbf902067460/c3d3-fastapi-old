@@ -14,4 +14,4 @@ class LinkAddressesChains(Base):
     h_address_id = Column(Integer, ForeignKey('h_addresses.h_address_id'), nullable=False)
     h_chain_id = Column(Integer, ForeignKey('h_chains.h_chain_id'), nullable=False)
 
-    l_address_chain_name = Column(Text)
+    l_address_chain_name = Column(Text, nullable=True)
