@@ -3,14 +3,14 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, drop_database, create_database
 
 from src.orm.base.main import Base
-from src.orm.cfg.engine import ORMSettings
 from src.orm import base
 
 from tests._fixtures.cfg import FIXTURE
+from tests.conftest import TestORMSettings
 
 
-URI = ORMSettings.get_uri()
-ENGINE = ORMSettings.get_engine()
+URI = TestORMSettings.get_uri()
+ENGINE = TestORMSettings.get_engine()
 
 
 @pytest.fixture(scope='session')
