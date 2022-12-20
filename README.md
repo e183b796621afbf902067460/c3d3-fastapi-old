@@ -47,9 +47,9 @@ source venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
-- Init database schema:
+- Fill database with fixtures:
 ```
-pytest tests/run.py
+pytest tests/_fixtures/conftest.py
 ```
 
 - Run FastAPI server using `uvicorn`:
