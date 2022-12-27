@@ -19,7 +19,7 @@ git clone https://github.com/e183b796621afbf902067460/defi-fastapi.git
 cd defi-fastapi/
 ```
 
-- Set the __BACKEND_CORS_ORIGINS__ variable in [settings.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/cfg/settings.py) to allow [frontend](https://github.com/e183b796621afbf902067460/defi-react), for local setup:
+- Set CORS in [settings.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/cfg/settings.py) to allow [frontend](https://github.com/e183b796621afbf902067460/defi-react), for local setup:
 ```python
 BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
        "http://localhost:3000"
@@ -76,7 +76,7 @@ uvicorn src.app:app --reload
   SERVER_HOST: 0.0.0.0
   SERVER_PORT: 8000
   ```
-  - Set CORS environment variables in [settings.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/cfg/settings.py), by default:
+  - Set CORS in [settings.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/cfg/settings.py), by default:
   ```python
   BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
         'http://localhost:3000'
