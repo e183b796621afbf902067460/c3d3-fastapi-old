@@ -85,7 +85,7 @@ uvicorn src.app:app --reload
   - Set CORS in [settings.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/cfg/settings.py), by default:
   ```python
   BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
-        'http://localhost:3000'
+        'http://0.0.0.0:3000'
         ]
   ```
 
