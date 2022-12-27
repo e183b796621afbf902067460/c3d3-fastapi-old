@@ -96,6 +96,37 @@ docker-compose up -d
 
 `Result will be at` [http://0.0.0.0:8000/docs](http://0.0.0.0:8000/docs)
 
+# Fixtures
+
+Additional fixtures can be added to check requests success rate.
+
+- See existing containers:
+```
+docker ps
+```
+
+- Copy `backend's` \<CONTAINER ID> and run inside of it:
+```
+docker exec -it <CONTAINER ID> pytest tests/_fixtures/conftest.py
+```
+
+By default:
+
+- Username
+```
+defi_management
+```
+- Password
+```
+defi_management
+```
+- Chains
+`ETH`, `BSC`, `FTM`, `AVAX`.
+- Protocols
+`Aave`, `Curve`, `UniSwap`, `SushiSwap`, `PancakeSwap`, `Convex`, `Geist`, `Nereus`, `Ellipsis`,  `Sturdy`.
+- Yields
+`Lending`, `Staking`, `Farming`, `DEX`.
+
 # Exit
 - To stop all running containers:
 ```
