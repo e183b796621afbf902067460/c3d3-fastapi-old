@@ -34,6 +34,12 @@ DB_PASSWORD = quote_plus(os.getenv('POSTGRES_PASSWORD', ''))
 DB_NAME = os.getenv('POSTGRES_DB', '')
 ```
 
+- Set server configuration in [settings.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/cfg/settings.py), for local setup:
+```python
+SERVER_HOST = config('SERVER_HOST', cast=str, default='0.0.0.0')
+SERVER_PORT = config('SERVER_PORT', cast=int, default=8000)
+```
+
 - Create a virtual environment:
 ```
 python3 -m venv venv
