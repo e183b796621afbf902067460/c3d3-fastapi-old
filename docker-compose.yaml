@@ -10,7 +10,7 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - .:/app/
+      - ./tests:/code/tests
     environment:
       PYTHONPATH: ${PYTHONPATH}:/code/src
 

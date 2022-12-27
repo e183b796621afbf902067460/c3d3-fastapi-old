@@ -1,6 +1,7 @@
 import pytest
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, drop_database, create_database
+from passlib.context import CryptContext
 
 from src.orm.base.main import Base
 from src.orm import base
@@ -29,7 +30,12 @@ def session(environment):
 
 
 @pytest.fixture(scope='session')
-def _fixtures(session):
+def encrypter():
+    return CryptContext(schemes=['bcrypt'], deprecated='auto')
+
+@pytest.fixture(scope='session')
+def _fixtures(session, encrypter):
+
     for l_address_chain_name, conf in FIXTURE.items():
 
         # TODO Hubs
@@ -82,7 +88,7 @@ def _fixtures(session):
         if not h_label:
             h_label = base.HubLabels(
                 h_label_name=conf['h_labels']['h_label_name'],
-                h_label_password=conf['h_labels']['h_label_password']
+                h_label_password=encrypter.hash(secret=conf['h_labels']['h_label_password'])
             )
 
         hubs = [

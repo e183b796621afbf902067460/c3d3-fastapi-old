@@ -43,10 +43,10 @@ def _get_authorization_header(client: TestClient, username: str = TEST_USERNAME,
 
 
 class TestORMSettings(ORMSettings):
-    DB_ADDRESS = os.getenv('DB_ADDRESS', 'localhost')
-    DB_USER = os.getenv('DB_USER', 'username')
-    DB_PASSWORD = quote_plus(os.getenv('DB_PASSWORD', '111222'))
-    DB_NAME = os.getenv('DB_NAME', 'funds')
+    DB_ADDRESS = os.getenv('POSTGRES_HOST', '')
+    DB_USER = os.getenv('POSTGRES_USER', '')
+    DB_PASSWORD = quote_plus(os.getenv('POSTGRES_PASSWORD', ''))
+    DB_NAME = os.getenv('POSTGRES_DB', '')
 
     DB_URL = f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_ADDRESS}/{DB_NAME}'
 

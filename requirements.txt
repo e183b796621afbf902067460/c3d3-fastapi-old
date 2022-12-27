@@ -14,3 +14,4 @@ SQLAlchemy~=1.4.40
 SQLAlchemy-Utils~=0.38.3
 uvicorn~=0.20.0
 web3~=5.30.0
+httpx~=0.23.1

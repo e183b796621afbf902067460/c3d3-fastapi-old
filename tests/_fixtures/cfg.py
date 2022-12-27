@@ -16,8 +16,8 @@ FIXTURE = {
             'h_wallet_address': '0x7344E478574aCBe6DaC9dE1077430139E17EEc3D'
         },
         'h_labels': {
-            'h_label_name': 'DEFI',
-            'h_label_password': '!defi'
+            'h_label_name': 'defi_management',
+            'h_label_password': 'defi_management'
         }
     },
     'FRAX/3CRV Gauge': {
@@ -37,8 +37,8 @@ FIXTURE = {
             'h_wallet_address': '0xcb05e41aE2F23A7356e1Cc0eD7db2cd2dC0f9d22'
         },
         'h_labels': {
-            'h_label_name': 'DEFI',
-            'h_label_password': '!defi'
+            'h_label_name': 'defi_management',
+            'h_label_password': 'defi_management'
         }
     },
     'FRAX/3CRV Farming': {
@@ -58,8 +58,8 @@ FIXTURE = {
             'h_wallet_address': '0x670647441D9C24d981923C9293A2e4EAE6d0C8B3'
         },
         'h_labels': {
-            'h_label_name': 'DEFI',
-            'h_label_password': '!defi'
+            'h_label_name': 'defi_management',
+            'h_label_password': 'defi_management'
         }
     },
     'EPX Staking Pool': {
@@ -79,8 +79,8 @@ FIXTURE = {
             'h_wallet_address': '0x3DdfA8eC3052539b6C9549F12cEA2C295cfF5296'
         },
         'h_labels': {
-            'h_label_name': 'DEFI',
-            'h_label_password': '!defi'
+            'h_label_name': 'defi_management',
+            'h_label_password': 'defi_management'
         }
     },
     'Lending Pool Geist': {
@@ -100,8 +100,8 @@ FIXTURE = {
             'h_wallet_address': '0xbbbb1e5810998581F7977E9F5fa98a3250Cb809f'
         },
         'h_labels': {
-            'h_label_name': 'DEFI',
-            'h_label_password': '!defi'
+            'h_label_name': 'defi_management',
+            'h_label_password': 'defi_management'
         }
     },
     'Lending Pool Nereus': {
@@ -121,8 +121,8 @@ FIXTURE = {
             'h_wallet_address': '0xE3f277382419535245a345e923898c2d43f7CBE5'
         },
         'h_labels': {
-            'h_label_name': 'DEFI',
-            'h_label_password': '!defi'
+            'h_label_name': 'defi_management',
+            'h_label_password': 'defi_management'
         }
     },
     'WETH/WBNB LP': {
@@ -142,8 +142,8 @@ FIXTURE = {
             'h_wallet_address': '0x5BBf23e93AfAF400414c44F4C6A93a50aE3cDc73'
         },
         'h_labels': {
-            'h_label_name': 'DEFI',
-            'h_label_password': '!defi'
+            'h_label_name': 'defi_management',
+            'h_label_password': 'defi_management'
         }
     },
     'Lending Pool Sturdy': {
@@ -163,8 +163,8 @@ FIXTURE = {
             'h_wallet_address': '0x8569A0f17EF60Eb91F75d867AECC6a3AE02C4999'
         },
         'h_labels': {
-            'h_label_name': 'DEFI',
-            'h_label_password': '!defi'
+            'h_label_name': 'defi_management',
+            'h_label_password': 'defi_management'
         }
     },
     'CVX/ETH LP': {
@@ -184,8 +184,8 @@ FIXTURE = {
             'h_wallet_address': '0xbDfA4f4492dD7b7Cf211209C4791AF8d52BF5c50'
         },
         'h_labels': {
-            'h_label_name': 'DEFI',
-            'h_label_password': '!defi'
+            'h_label_name': 'defi_management',
+            'h_label_password': 'defi_management'
         }
     },
     'USDC/WETH LP': {
@@ -205,8 +205,8 @@ FIXTURE = {
             'h_wallet_address': '0xeC08867a12546ccf53b32efB8C23bb26bE0C04f1'
         },
         'h_labels': {
-            'h_label_name': 'DEFI',
-            'h_label_password': '!defi'
+            'h_label_name': 'defi_management',
+            'h_label_password': 'defi_management'
         }
     }
 }
