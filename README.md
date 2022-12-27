@@ -72,7 +72,7 @@ uvicorn src.app:app --reload
   SERVER_HOST: 0.0.0.0
   SERVER_PORT: 8000
   ```
-  - Set CORS environment variables in [settings](), by default:
+  - Set CORS environment variables in [settings.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/cfg/settings.py), by default:
   ```python
   BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
         'http://localhost:3000'
