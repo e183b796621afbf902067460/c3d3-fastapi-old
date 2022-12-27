@@ -110,7 +110,7 @@ docker ps
 docker exec -it <CONTAINER ID> pytest tests/_fixtures/conftest.py
 ```
 
-By default:
+__By__ __default:__
 
 - Username
 ```
