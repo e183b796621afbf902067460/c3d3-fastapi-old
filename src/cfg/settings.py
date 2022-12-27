@@ -19,7 +19,7 @@ class AppSettings(BaseSettings):
     JWT_REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
 
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
-        'http://localhost:3000'
+        'http://0.0.0.0:3000'
         ]
 
     BASE_PATH = Path(__file__[:-15]).resolve()
