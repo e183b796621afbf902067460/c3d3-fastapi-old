@@ -19,17 +19,25 @@ git clone https://github.com/e183b796621afbf902067460/defi-fastapi.git
 cd defi-fastapi/
 ```
 
-- Set the __BACKEND_CORS_ORIGINS__ variable in [settings.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/cfg/settings.py) to allow [frontend](https://github.com/e183b796621afbf902067460/defi-react), for local setup:
+- Set CORS in [settings.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/cfg/settings.py) to allow [frontend](https://github.com/e183b796621afbf902067460/defi-react), for local setup:
 ```python
-BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = ["http://localhost:3000"]
+BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
+       "http://localhost:3000"
+       ]
 ```
 
 - Set credentials in [engine.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/orm/cfg/engine.py), for local setup:
 ```python
-DB_ADDRESS = os.getenv('DB_ADDRESS', 'localhost')
-DB_USER = os.getenv('DB_USER', 'username')
-DB_PASSWORD = quote_plus(os.getenv('DB_PASSWORD', 'password'))
-DB_NAME = os.getenv('DB_NAME', 'defi')
+DB_ADDRESS = os.getenv('POSTGRES_HOST', '')
+DB_USER = os.getenv('POSTGRES_USER', '')
+DB_PASSWORD = quote_plus(os.getenv('POSTGRES_PASSWORD', ''))
+DB_NAME = os.getenv('POSTGRES_DB', '')
+```
+
+- Set server configuration in [settings.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/cfg/settings.py), for local setup:
+```python
+SERVER_HOST = config('SERVER_HOST', cast=str, default='0.0.0.0')
+SERVER_PORT = config('SERVER_PORT', cast=int, default=8000)
 ```
 
 - Create a virtual environment:
@@ -55,4 +63,45 @@ pytest tests/_fixtures/conftest.py
 - Run FastAPI server using `uvicorn`:
 ```
 uvicorn src.app:app --reload
+```
+
+`Result will be at` [http://0.0.0.0:8000/docs](http://0.0.0.0:8000/docs)
+
+# Docker
+- Set the __ENV__ variables in `docker-compose.yaml`:
+  
+  - PostgreSQL environment variables in [backend](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/docker-compose.yaml#L6) and [orm](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/docker-compose.yaml#L29) services, by default:
+  ```
+  POSTGRES_HOST: orm
+  POSTGRES_USER: defi_management
+  POSTGRES_PASSWORD: defi_management
+  POSTGRES_DB: defi_management
+  ```
+  - Server environment variables in [backend](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/docker-compose.yaml#L6) service, by default:
+  ```
+  SERVER_HOST: 0.0.0.0
+  SERVER_PORT: 8000
+  ```
+  - Set CORS in [settings.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/cfg/settings.py), by default:
+  ```python
+  BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
+        'http://localhost:3000'
+        ]
+  ```
+
+- Run docker compose (`sudo`):
+```
+docker-compose up -d
+```
+
+`Result will be at` [http://0.0.0.0:8000/docs](http://0.0.0.0:8000/docs)
+
+# Exit
+- To stop all running containers:
+```
+docker stop $(docker ps -a -q)
+```
+- And remove it all:
+```
+docker rm $(docker ps -a -q)
 ```
