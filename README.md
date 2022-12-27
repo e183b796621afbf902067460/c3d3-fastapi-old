@@ -57,6 +57,8 @@ pytest tests/_fixtures/conftest.py
 uvicorn src.app:app --reload
 ```
 
+`Result will be at` [http://0.0.0.0:8000/docs](http://0.0.0.0:8000/docs)
+
 # Docker
 - Set the __ENV__ variables in `docker-compose.yaml`:
   
@@ -83,6 +85,8 @@ uvicorn src.app:app --reload
 ```
 docker-compose up -d
 ```
+
+`Result will be at` [http://0.0.0.0:8000/docs](http://0.0.0.0:8000/docs)
 
 # Exit
 - To stop all running containers:
