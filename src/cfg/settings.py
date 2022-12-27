@@ -18,9 +18,14 @@ class AppSettings(BaseSettings):
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     JWT_REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
 
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl]
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
+        'http://localhost:3000'
+        ]
 
     BASE_PATH = Path(__file__[:-15]).resolve()
+
+    SERVER_HOST = config('SERVER_HOST', cast=str, default='0.0.0.0')
+    SERVER_PORT = config('SERVER_PORT', cast=int, default=8000)
 
     class Config:
         case_sensitive = True

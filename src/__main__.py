@@ -1,11 +1,11 @@
 import uvicorn
-from decouple import config
 
 from src.app import app
+from src.cfg.settings import settings
 
 
 uvicorn.run(
     app=app,
-    host=config('SERVER_HOST', cast=str, default='0.0.0.0'),
-    port=config('SERVER_PORT', cast=int, default=8000)
+    host=settings.SERVER_HOST,
+    port=settings.SERVER_PORT
 )
