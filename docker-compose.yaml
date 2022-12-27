@@ -14,10 +14,10 @@ services:
     environment:
       PYTHONPATH: ${PYTHONPATH}:/code/src
 
-      DB_ADDRESS: orm
-      DB_NAME: defi_management
-      DB_USER: defi_management
-      DB_PASSWORD: defi_management
+      POSTGRES_HOST: orm
+      POSTGRES_USER: defi_management
+      POSTGRES_PASSWORD: defi_management
+      POSTGRES_DB: defi_management
 
       SERVER_HOST: 0.0.0.0
       SERVER_PORT: 8000
