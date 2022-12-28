@@ -1,4 +1,3 @@
-defi-head-core @ git+https://github.com/e183b796621afbf902067460/defi-head-core.git@71c63885d3dec58b92087ace732e65b16e6bb45b
 fastapi~=0.88.0
 fastapi-utils~=0.2.1
 Jinja2~=3.1.2
