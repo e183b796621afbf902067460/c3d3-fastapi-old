@@ -33,6 +33,7 @@ def session(environment):
 def encrypter():
     return CryptContext(schemes=['bcrypt'], deprecated='auto')
 
+
 @pytest.fixture(scope='session')
 def _fixtures(session, encrypter):
 
