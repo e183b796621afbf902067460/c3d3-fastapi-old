@@ -26,7 +26,7 @@ BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
        ]
 ```
 
-- Set credentials in [engine.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/orm/cfg/engine.py), for local setup:
+- Set credentials in [engine.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/orm/cfg/engine.py), by default:
 ```python
 DB_ADDRESS = os.getenv('POSTGRES_HOST', '')
 DB_USER = os.getenv('POSTGRES_USER', '')
@@ -34,7 +34,7 @@ DB_PASSWORD = quote_plus(os.getenv('POSTGRES_PASSWORD', ''))
 DB_NAME = os.getenv('POSTGRES_DB', '')
 ```
 
-- Set server configuration in [settings.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/cfg/settings.py), for local setup:
+- Set server configuration in [settings.py](https://github.com/e183b796621afbf902067460/defi-fastapi/blob/master/src/cfg/settings.py), by default:
 ```python
 SERVER_HOST = config('SERVER_HOST', cast=str, default='0.0.0.0')
 SERVER_PORT = config('SERVER_PORT', cast=int, default=8000)
