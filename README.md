@@ -1,5 +1,5 @@
 # DeFi FastAPI
-Depends on: [defi-head-core](https://github.com/e183b796621afbf902067460/defi-head-core).
+No dependencies.
 
 ---
 
