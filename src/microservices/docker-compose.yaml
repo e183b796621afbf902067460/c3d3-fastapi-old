@@ -1,0 +1,59 @@
+---
+version: '3'
+
+services:
+
+  gateway:
+    command: python3 app/views/router/view.py
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    ports:
+      - '8000:8000'
+    depends_on:
+      - auth
+    volumes:
+      - ./gateway:/app
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: ${PYTHONPATH}:/code/app
+    networks:
+      - c3d3_network
+
+  auth:
+    command: python3 app/views/view.py
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: auth_db
+      POSTGRES_USER: auth_db
+      POSTGRES_PASSWORD: auth_db
+      POSTGRES_DB: auth_db
+
+      PYTHONPATH: ${PYTHONPATH}:/code/app
+    networks:
+      - c3d3_network
+
+  auth_db:
+    image: postgres:13
+    environment:
+      POSTGRES_HOST: auth_db
+      POSTGRES_USER: auth_db
+      POSTGRES_PASSWORD: auth_db
+      POSTGRES_DB: auth_db
+    volumes:
+      - ./auth/app/orm/__init__.sql:/docker-entrypoint-initdb.d/__init__.sql
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "auth_vault" ]
+      interval: 5s
+      retries: 5
+    restart: always
+    networks:
+      - c3d3_network
+
+networks:
+  c3d3_network:
