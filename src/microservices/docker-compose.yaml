@@ -4,6 +4,7 @@ version: '3'
 services:
 
   gateway:
+    image: microservices_gateway:latest
     command: python3 app/views/router/view.py
     build:
       context: ./gateway
@@ -22,6 +23,7 @@ services:
       - c3d3_network
 
   auth:
+    image: microservices_auth:latest
     command: python3 app/views/view.py
     build:
       context: ./auth
@@ -45,10 +47,41 @@ services:
       POSTGRES_USER: auth_db
       POSTGRES_PASSWORD: auth_db
       POSTGRES_DB: auth_db
-    volumes:
-      - ./auth/app/orm/__init__.sql:/docker-entrypoint-initdb.d/__init__.sql
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "auth_vault" ]
+      test: [ "CMD", "pg_isready", "-U", "auth_db" ]
+      interval: 5s
+      retries: 5
+    restart: always
+    networks:
+      - c3d3_network
+
+  c3:
+    image: microservices_c3:latest
+    command: python3 app/views/view.py
+    build:
+      context: ./c3
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: c3_db
+      POSTGRES_USER: c3_db
+      POSTGRES_PASSWORD: c3_db
+      POSTGRES_DB: c3_db
+
+      PYTHONPATH: ${PYTHONPATH}:/code/app
+    networks:
+      - c3d3_network
+
+  c3_db:
+    image: postgres:13
+    environment:
+      POSTGRES_HOST: c3_db
+      POSTGRES_USER: c3_db
+      POSTGRES_PASSWORD: c3_db
+      POSTGRES_DB: c3_db
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "c3_db" ]
       interval: 5s
       retries: 5
     restart: always

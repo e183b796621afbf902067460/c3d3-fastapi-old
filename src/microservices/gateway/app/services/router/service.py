@@ -38,8 +38,7 @@ class RouterService:
             service_url: str,
             response_model=None,
             is_permission: bool = False,
-            is_access_token: Optional[bool] = None,
-            is_header: bool = False
+            is_access_token: Optional[bool] = None
     ):
 
         method = method(
@@ -73,7 +72,7 @@ class RouterService:
                         url=f"{service_url}{request.scope['path']}",
                         method=request.scope['method'].lower(),
                         data=kwargs.get(payload_key).dict() if kwargs.get(payload_key) else dict(),
-                        headers=dict() if not is_header else cls.security_service.generate_header(payload),
+                        headers=dict() if not is_permission else cls.security_service.generate_header(payload),
                     )
                 except aiohttp.client.ClientConnectorError:
                     raise HTTPException(
