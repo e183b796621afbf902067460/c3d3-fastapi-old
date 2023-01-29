@@ -43,44 +43,6 @@ docker exec -it <CONTAINER ID> python3 app/orm/scripts/create.py
 docker exec -it <CONTAINER ID> python3 app/__init__.py
 ```
 
-# Endpoints
-
-- `/api/v1/auth/login`
-```python
-import requests as r
-
-
-url = 'http://0.0.0.0:8000/api/v1/auth/login?self=self'
-data = {"username": "default", "password": "default"}
-header = {'accept': 'application/json', 'Content-Type': 'application/json'}
-
-response = r.post(url=url, json=data, headers=header)
-```
-
-- `/api/v1/c3/new_account`
-```python
-import requests as r
-
-
-url = 'http://0.0.0.0:8000/api/v1/c3/new_account?self=self'
-data = {"label_name": "default", "label_api_key": "default", "label_api_secret": "default"}
-header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': '<access_token>'}
-
-response = r.post(url=url, json=data, headers=header)
-```
-
-- `/api/v1/c3/new_account_balances`
-```python
-import requests as r
-
-
-url = 'http://0.0.0.0:8000/api/v1/c3/new_account_balances?self=self'
-data = {"exchange_name": "default", "instrument_name": "default", "label_name": "default"}
-header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': '<access_token>'}
-
-response = r.post(url=url, json=data, headers=header)
-```
-
 # Exit
 - To stop all running containers:
 ```
