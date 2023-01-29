@@ -88,5 +88,38 @@ services:
     networks:
       - c3d3_network
 
+  d3:
+    image: microservices_d3:latest
+    command: python3 app/views/view.py
+    build:
+      context: ./d3
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: d3_db
+      POSTGRES_USER: d3_db
+      POSTGRES_PASSWORD: d3_db
+      POSTGRES_DB: d3_db
+
+      PYTHONPATH: ${PYTHONPATH}:/code/app
+    networks:
+      - c3d3_network
+
+  d3_db:
+    image: postgres:13
+    environment:
+      POSTGRES_HOST: d3_db
+      POSTGRES_USER: d3_db
+      POSTGRES_PASSWORD: d3_db
+      POSTGRES_DB: d3_db
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "d3_db" ]
+      interval: 5s
+      retries: 5
+    restart: always
+    networks:
+      - c3d3_network
+
 networks:
   c3d3_network:

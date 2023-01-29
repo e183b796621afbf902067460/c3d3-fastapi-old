@@ -7,6 +7,7 @@ class AppSettings(BaseSettings):
 
     AUTH_SERVICE_URL: str = 'http://auth:8000'
     C3_SERVICE_URL: str = 'http://c3:8000'
+    D3_SERVICE_URL: str = 'http://d3:8000'
 
     JWT_FERNET_KEY: str = config('JWT_FERNET_KEY', cast=str)
     JWT_ALGORITHM: str = config('JWT_ALGORITHM', cast=str, default='HS256')

@@ -19,7 +19,7 @@ class C3CBV:
 
     @gateway.route(
         method=router.post,
-        path=f'{settings.API_V1}/new_account',
+        path='/new_account',
         status_code=status.HTTP_201_CREATED,
         payload_key='new_account',
         service_url=settings.C3_SERVICE_URL,
@@ -31,7 +31,7 @@ class C3CBV:
 
     @gateway.route(
         method=router.post,
-        path=f'{settings.API_V1}/new_account_balances',
+        path='/new_account_balances',
         status_code=status.HTTP_201_CREATED,
         payload_key='new_account_balance',
         service_url=settings.C3_SERVICE_URL,
@@ -43,7 +43,7 @@ class C3CBV:
 
     @gateway.route(
         method=router.post,
-        path=f'{settings.API_V1}/new_account_limit_orders',
+        path='/new_account_limit_orders',
         status_code=status.HTTP_201_CREATED,
         payload_key='new_account_limit_order',
         service_url=settings.C3_SERVICE_URL,
@@ -55,7 +55,7 @@ class C3CBV:
 
     @gateway.route(
         method=router.post,
-        path=f'{settings.API_V1}/new_account_liquidations',
+        path='/new_account_liquidations',
         status_code=status.HTTP_201_CREATED,
         payload_key='new_account_liquidation',
         service_url=settings.C3_SERVICE_URL,
@@ -67,7 +67,7 @@ class C3CBV:
 
     @gateway.route(
         method=router.post,
-        path=f'{settings.API_V1}/new_whole_market_trades_history',
+        path='/new_whole_market_trades_history',
         status_code=status.HTTP_201_CREATED,
         payload_key='new_whole_market_trades_history',
         service_url=settings.C3_SERVICE_URL,
@@ -78,4 +78,4 @@ class C3CBV:
         pass
 
 
-app.include_router(router=router)
+app.include_router(router=router, prefix=f'{settings.API_V1}' + '/c3')

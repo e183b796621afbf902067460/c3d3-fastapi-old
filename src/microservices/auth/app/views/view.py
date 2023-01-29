@@ -15,7 +15,7 @@ router = InferringRouter()
 @cbv(router=router)
 class AuthCBV:
 
-    @router.post(path=f'{settings.API_V1}/login', status_code=status.HTTP_200_OK)
+    @router.post(path='/login', status_code=status.HTTP_200_OK)
     async def on_post__login(self, form: SessionLoginSchema, service: SessionService = Depends()):
         session = service.on_post__login(session_name=form.username, password=form.password)
         if not session:
@@ -26,7 +26,7 @@ class AuthCBV:
         return session
 
 
-app.include_router(router=router)
+app.include_router(router=router, prefix=f'{settings.API_V1}' + '/auth')
 
 
 if __name__ == '__main__':

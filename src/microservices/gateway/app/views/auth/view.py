@@ -16,7 +16,7 @@ class AuthCBV:
 
     @gateway.route(
         method=router.post,
-        path=f'{settings.API_V1}/login',
+        path='/login',
         status_code=status.HTTP_200_OK,
         payload_key='oauth2',
         service_url=settings.AUTH_SERVICE_URL,
@@ -27,4 +27,4 @@ class AuthCBV:
         pass
 
 
-app.include_router(router=router)
+app.include_router(router=router, prefix=f'{settings.API_V1}' + '/auth')
