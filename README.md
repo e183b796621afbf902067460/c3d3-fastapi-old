@@ -5,7 +5,7 @@ No dependencies.
 
 C3D3 FastAPI backend helps to automate C3D3 Data Vault management.
 
-# Local Configuration
+# Configuration
 
 First of all to configure FastAPI backend correctly need to do next steps:
 
