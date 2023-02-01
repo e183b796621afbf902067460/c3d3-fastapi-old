@@ -52,3 +52,13 @@ docker stop $(docker ps -a -q)
 ```
 docker rm $(docker ps -a -q)
 ```
+
+# Alembic
+- After any changes in DBs this command should be done in `/app/orm` path:
+```
+alembic revision --autogenerate
+```
+- And make migrations:
+```
+alembic upgrade head
+```
