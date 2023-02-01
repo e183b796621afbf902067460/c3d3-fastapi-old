@@ -1,16 +1,16 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
 from alembic import context
 
 import sys
 from os.path import abspath, dirname
 sys.path.insert(0, dirname(dirname(dirname(dirname(abspath(__file__))))))
 
-from app.orm.base.main import Base
-from app.orm.cfg.engine import ORMSettings
+try:
+    from app.orm.base.main import Base
+    from app.orm.cfg.engine import ORMSettings
+except ModuleNotFoundError:
+    raise ModuleNotFoundError('Incorrect sys.path argument in c3/ microservice')
 
 
 # this is the Alembic Config object, which provides
