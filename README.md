@@ -38,12 +38,12 @@ docker ps
 docker exec -it <CONTAINER ID> python3 app/orm/scripts/create.py
 ```
 
-- And setup alembic instance:
+- And setup alembic for each instance:
 ```
 sudo docker exec -it <CONTAINER ID> bash -c 'cd app/orm; alembic upgrade head'
 ```
 
-- Create default admin user in auth container:
+- Create default admin user in `auth` container:
 ```
 docker exec -it <CONTAINER ID> python3 app/__init__.py
 ```
