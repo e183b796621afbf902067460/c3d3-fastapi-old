@@ -14,3 +14,4 @@ uvicorn>=0.20.0
 web3>=5.30.0
 httpx>=0.23.1
 cryptography>=39.0.0
+alembic>=1.9.2

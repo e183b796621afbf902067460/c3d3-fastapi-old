@@ -13,5 +13,5 @@ class hLabels(Base):
         return camel2snake(cls.__name__)
 
     h_label_id = Column(Integer, primary_key=True)
-    h_label_name = Column(Text, nullable=False)
+    h_label_name = Column(Text, nullable=False, unique=True)
     h_label_load_ts = Column(DateTime, server_default=func.now(), nullable=False)

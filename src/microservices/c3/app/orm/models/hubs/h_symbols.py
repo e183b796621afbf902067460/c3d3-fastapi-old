@@ -14,5 +14,5 @@ class hSymbols(Base):
         return camel2snake(cls.__name__)
 
     h_symbol_id = Column(Integer, primary_key=True)
-    h_symbol_name = Column(Text, nullable=False)
+    h_symbol_name = Column(Text, nullable=False, unique=True)
     h_symbol_load_ts = Column(DateTime, server_default=func.now(), nullable=False)

@@ -14,7 +14,7 @@ class hChains(Base):
 
     h_chain_id = Column(Integer, primary_key=True)
 
-    h_network_name = Column(Text, nullable=False)
+    h_network_name = Column(Text, nullable=False, unique=True)
     h_native_chain_token = Column(Text, nullable=False)
     h_network_rpc_node = Column(Text, nullable=False)
     h_network_block_limit = Column(Integer, nullable=False)
