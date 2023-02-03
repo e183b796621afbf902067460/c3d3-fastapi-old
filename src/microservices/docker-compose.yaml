@@ -10,14 +10,16 @@ services:
       dockerfile: Dockerfile
     ports:
       - '8000:8000'
-    depends_on:
-      - auth
     volumes:
       - ./gateway:/app
     env_file:
       - .env
     environment:
       PYTHONPATH: ${PYTHONPATH}:/code/app
+    depends_on:
+      - auth-service
+      - c3-service
+      - d3-service
     networks:
       - c3d3_network
 
@@ -37,21 +39,8 @@ services:
       PYTHONPATH: ${PYTHONPATH}:/code/app
     networks:
       - c3d3_network
-
-  auth-postgres:
-    image: postgres:13
-    environment:
-      POSTGRES_HOST: auth_db
-      POSTGRES_USER: auth_db
-      POSTGRES_PASSWORD: auth_db
-      POSTGRES_DB: auth_db
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "auth_db" ]
-      interval: 5s
-      retries: 5
-    restart: always
-    networks:
-      - c3d3_network
+    depends_on:
+      - auth-postgres
 
   c3-service:
     command: python3 app/views/view.py
@@ -69,21 +58,8 @@ services:
       PYTHONPATH: ${PYTHONPATH}:/code/app
     networks:
       - c3d3_network
-
-  c3-postgres:
-    image: postgres:13
-    environment:
-      POSTGRES_HOST: c3_db
-      POSTGRES_USER: c3_db
-      POSTGRES_PASSWORD: c3_db
-      POSTGRES_DB: c3_db
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "c3_db" ]
-      interval: 5s
-      retries: 5
-    restart: always
-    networks:
-      - c3d3_network
+    depends_on:
+      - c3-postgres
 
   d3-service:
     command: python3 app/views/view.py
@@ -99,6 +75,38 @@ services:
       POSTGRES_DB: d3_db
 
       PYTHONPATH: ${PYTHONPATH}:/code/app
+    networks:
+      - c3d3_network
+    depends_on:
+      - d3-postgres
+
+  auth-postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_HOST: auth_db
+      POSTGRES_USER: auth_db
+      POSTGRES_PASSWORD: auth_db
+      POSTGRES_DB: auth_db
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "auth_db" ]
+      interval: 5s
+      retries: 5
+    restart: always
+    networks:
+      - c3d3_network
+
+  c3-postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_HOST: c3_db
+      POSTGRES_USER: c3_db
+      POSTGRES_PASSWORD: c3_db
+      POSTGRES_DB: c3_db
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "c3_db" ]
+      interval: 5s
+      retries: 5
+    restart: always
     networks:
       - c3d3_network
 
