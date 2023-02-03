@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey, DateTime
+from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declared_attr
 from fastapi_utils.camelcase import camel2snake
 
@@ -14,3 +15,4 @@ class lAddressesChains(Base):
     l_address_chain_id = Column(Integer, primary_key=True)
     h_address_id = Column(Integer, ForeignKey('h_addresses.h_address_id'), nullable=False)
     h_chain_id = Column(Integer, ForeignKey('h_chains.h_chain_id'), nullable=False)
+    l_address_chain_load_ts = Column(DateTime, server_default=func.now(), nullable=False)

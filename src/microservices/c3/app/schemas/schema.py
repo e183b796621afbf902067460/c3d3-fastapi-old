@@ -19,6 +19,9 @@ class ExchangeTickerORMSchema(BaseModel):
     h_ticker_id: int
     l_exchange_ticker_load_ts: datetime
 
+    class Config:
+        orm_mode = True
+
 
 class ExchangeSymbolLabelORMSchema(BaseModel):
     l_exchange_symbol_label_id: int

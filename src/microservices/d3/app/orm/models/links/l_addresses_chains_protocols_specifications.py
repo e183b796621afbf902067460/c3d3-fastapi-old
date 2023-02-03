@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, ForeignKey, Boolean, DateTime
+from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declared_attr
 from fastapi_utils.camelcase import camel2snake
 
@@ -14,3 +15,4 @@ class lAddressesChainsProtocolsSpecifications(Base):
     l_address_chain_protocol_specification_id = Column(Integer, primary_key=True)
     l_address_chain_id = Column(Integer, ForeignKey('l_addresses_chains.l_address_chain_id'), nullable=False)
     l_protocol_specification_id = Column(Integer, ForeignKey('l_protocols_specifications.l_protocol_specification_id'), nullable=False)
+    l_address_chain_protocol_specification_load_ts = Column(DateTime, server_default=func.now(), nullable=False)

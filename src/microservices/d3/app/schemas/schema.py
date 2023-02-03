@@ -58,6 +58,7 @@ class AddressChainProtocolSpecificationORMSchema(BaseModel):
     l_address_chain_protocol_specification_id: int
     l_address_chain_id: int
     l_protocol_specification_id: int
+    l_address_chain_protocol_specification_load_ts: datetime
 
     class Config:
         orm_mode = True
@@ -67,9 +68,17 @@ class AddressChainProtocolSpecificationLabelORMSchema(BaseModel):
     l_address_chain_protocol_specification_label_id: int
     l_address_chain_label_id: int
     l_address_chain_protocol_specification_id: int
+    l_address_chain_protocol_specification_label_load_ts: datetime
+
+    class Config:
+        orm_mode = True
 
 
 class TokenOnWalletORMSchema(BaseModel):
     l_token_on_wallet_id: int
     l_address_chain_id: int
     l_address_chain_label_id: int
+    l_token_on_wallet_load_ts: datetime
+
+    class Config:
+        orm_mode = True
