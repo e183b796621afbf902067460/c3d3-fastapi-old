@@ -3,8 +3,7 @@ version: '3'
 
 services:
 
-  gateway:
-    image: microservices_gateway:latest
+  gateway-service:
     command: python3 app/views/router/view.py
     build:
       context: ./gateway
@@ -22,8 +21,7 @@ services:
     networks:
       - c3d3_network
 
-  auth:
-    image: microservices_auth:latest
+  auth-service:
     command: python3 app/views/view.py
     build:
       context: ./auth
@@ -40,7 +38,7 @@ services:
     networks:
       - c3d3_network
 
-  auth_db:
+  auth-postgres:
     image: postgres:13
     environment:
       POSTGRES_HOST: auth_db
@@ -55,8 +53,7 @@ services:
     networks:
       - c3d3_network
 
-  c3:
-    image: microservices_c3:latest
+  c3-service:
     command: python3 app/views/view.py
     build:
       context: ./c3
@@ -73,7 +70,7 @@ services:
     networks:
       - c3d3_network
 
-  c3_db:
+  c3-postgres:
     image: postgres:13
     environment:
       POSTGRES_HOST: c3_db
@@ -88,8 +85,7 @@ services:
     networks:
       - c3d3_network
 
-  d3:
-    image: microservices_d3:latest
+  d3-service:
     command: python3 app/views/view.py
     build:
       context: ./d3
@@ -106,7 +102,7 @@ services:
     networks:
       - c3d3_network
 
-  d3_db:
+  d3-postgres:
     image: postgres:13
     environment:
       POSTGRES_HOST: d3_db
