@@ -80,7 +80,7 @@ services:
   auth-postgres:
     image: postgres:13
     environment:
-      POSTGRES_HOST: auth_db
+      POSTGRES_HOST: 0.0.0.0
       POSTGRES_USER: auth_db
       POSTGRES_PASSWORD: auth_db
       POSTGRES_DB: auth_db
@@ -99,7 +99,7 @@ services:
   c3-postgres:
     image: postgres:13
     environment:
-      POSTGRES_HOST: c3_db
+      POSTGRES_HOST: 0.0.0.0
       POSTGRES_USER: c3_db
       POSTGRES_PASSWORD: c3_db
       POSTGRES_DB: c3_db
@@ -118,7 +118,7 @@ services:
   d3-postgres:
     image: postgres:13
     environment:
-      POSTGRES_HOST: d3_db
+      POSTGRES_HOST: 0.0.0.0
       POSTGRES_USER: d3_db
       POSTGRES_PASSWORD: d3_db
       POSTGRES_DB: d3_db
