@@ -50,7 +50,7 @@ class C3CBV:
         response_model=ExchangeTickerLabelORMSchema,
         is_permission=True
     )
-    async def on_post__new_account_limit_orders(self, request: Request, response: Response, new_account_limit_orders: NewAccountLimitOrderSchema):
+    async def on_post__new_account_limit_orders(self, request: Request, response: Response, new_account_limit_order: NewAccountLimitOrderSchema):
         pass
 
     @gateway.route(
