@@ -115,7 +115,7 @@ def upgrade() -> None:
         sa.Column('l_token_on_wallet_id', sa.Integer(), nullable=False),
         sa.Column('l_address_chain_id', sa.Integer(), nullable=False),
         sa.Column('l_address_chain_label_id', sa.Integer(), nullable=False),
-        sa.Column('l_token_on_wallet__load_ts', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
+        sa.Column('l_token_on_wallet_load_ts', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
         sa.ForeignKeyConstraint(['l_address_chain_id'], ['l_addresses_chains.l_address_chain_id'], ),
         sa.ForeignKeyConstraint(['l_address_chain_label_id'], ['l_addresses_chains_labels.l_address_chain_label_id'], ),
         sa.PrimaryKeyConstraint('l_token_on_wallet_id')
