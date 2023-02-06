@@ -93,10 +93,8 @@ services:
     restart: always
     networks:
       - c3d3_network
-    ports:
-      - '5432:5432'
     volumes:
-      - ./auth-postgres:/var/lib/postgres/auth
+      - ./auth-postgres:/var/lib/postgresql/data
 
   c3-postgres:
     image: postgres:13
@@ -115,7 +113,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - ./c3-postgres:/var/lib/postgres/c3
+      - ./c3-postgres:/var/lib/postgresql/data
 
   d3-postgres:
     image: postgres:13
@@ -132,9 +130,9 @@ services:
     networks:
       - c3d3_network
     ports:
-      - '5432:5432'
+      - '5433:5432'
     volumes:
-      - ./d3-postgres:/var/lib/postgres/d3
+      - ./d3-postgres:/var/lib/postgresql/data
 
 networks:
   c3d3_network:
