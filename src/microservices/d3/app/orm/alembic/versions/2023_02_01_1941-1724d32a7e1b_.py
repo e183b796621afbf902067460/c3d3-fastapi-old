@@ -65,6 +65,7 @@ def upgrade() -> None:
         sa.Column('l_address_chain_id', sa.Integer(), nullable=False),
         sa.Column('h_address_id', sa.Integer(), nullable=False),
         sa.Column('h_chain_id', sa.Integer(), nullable=False),
+        sa.Column('l_address_chain_load_ts', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
         sa.ForeignKeyConstraint(['h_address_id'], ['h_addresses.h_address_id'], ),
         sa.ForeignKeyConstraint(['h_chain_id'], ['h_chains.h_chain_id'], ),
         sa.PrimaryKeyConstraint('l_address_chain_id')
@@ -74,6 +75,7 @@ def upgrade() -> None:
         sa.Column('l_protocol_specification_id', sa.Integer(), nullable=False),
         sa.Column('h_protocol_id', sa.Integer(), nullable=False),
         sa.Column('h_specification_id', sa.Integer(), nullable=False),
+        sa.Column('l_protocol_specification_load_ts', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
         sa.ForeignKeyConstraint(['h_protocol_id'], ['h_protocols.h_protocol_id'], ),
         sa.ForeignKeyConstraint(['h_specification_id'], ['h_specifications.h_specification_id'], ),
         sa.PrimaryKeyConstraint('l_protocol_specification_id')
@@ -83,6 +85,7 @@ def upgrade() -> None:
         sa.Column('l_address_chain_label_id', sa.Integer(), nullable=False),
         sa.Column('l_address_chain_id', sa.Integer(), nullable=False),
         sa.Column('h_label_id', sa.Integer(), nullable=False),
+        sa.Column('l_address_chain_label_load_ts', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
         sa.ForeignKeyConstraint(['h_label_id'], ['h_labels.h_label_id'], ),
         sa.ForeignKeyConstraint(['l_address_chain_id'], ['l_addresses_chains.l_address_chain_id'], ),
         sa.PrimaryKeyConstraint('l_address_chain_label_id')
@@ -92,6 +95,7 @@ def upgrade() -> None:
         sa.Column('l_address_chain_protocol_specification_id', sa.Integer(), nullable=False),
         sa.Column('l_address_chain_id', sa.Integer(), nullable=False),
         sa.Column('l_protocol_specification_id', sa.Integer(), nullable=False),
+        sa.Column('l_address_chain_protocol_specification_load_ts', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
         sa.ForeignKeyConstraint(['l_address_chain_id'], ['l_addresses_chains.l_address_chain_id'], ),
         sa.ForeignKeyConstraint(['l_protocol_specification_id'], ['l_protocols_specifications.l_protocol_specification_id'], ),
         sa.PrimaryKeyConstraint('l_address_chain_protocol_specification_id')
@@ -101,6 +105,7 @@ def upgrade() -> None:
         sa.Column('l_address_chain_protocol_specification_label_id', sa.Integer(), nullable=False),
         sa.Column('l_address_chain_label_id', sa.Integer(), nullable=False),
         sa.Column('l_address_chain_protocol_specification_id', sa.Integer(), nullable=False),
+        sa.Column('l_address_chain_protocol_specification_label_load_ts', sa.DateTime(), server_default=sa.text('now()'),nullable=False),
         sa.ForeignKeyConstraint(['l_address_chain_label_id'], ['l_addresses_chains_labels.l_address_chain_label_id'], ),
         sa.ForeignKeyConstraint(['l_address_chain_protocol_specification_id'], ['l_addresses_chains_protocols_specifications.l_address_chain_protocol_specification_id'], ),
         sa.PrimaryKeyConstraint('l_address_chain_protocol_specification_label_id')
@@ -110,6 +115,7 @@ def upgrade() -> None:
         sa.Column('l_token_on_wallet_id', sa.Integer(), nullable=False),
         sa.Column('l_address_chain_id', sa.Integer(), nullable=False),
         sa.Column('l_address_chain_label_id', sa.Integer(), nullable=False),
+        sa.Column('l_token_on_wallet__load_ts', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
         sa.ForeignKeyConstraint(['l_address_chain_id'], ['l_addresses_chains.l_address_chain_id'], ),
         sa.ForeignKeyConstraint(['l_address_chain_label_id'], ['l_addresses_chains_labels.l_address_chain_label_id'], ),
         sa.PrimaryKeyConstraint('l_token_on_wallet_id')
