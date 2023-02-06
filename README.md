@@ -92,13 +92,14 @@ response = r.post(url=url, json=data, headers=header)
 import requests as r
 
 
+access_token = ''
 url = 'http://0.0.0.0:8000/api/v1/c3/new_account?self=self'
 data = {
   "label_name": "string",
   "label_api_key": "string",
   "label_api_secret": "string"
 }
-header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': '<access_token>'}
+header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': access_token}
 
 response = r.post(url=url, json=data, headers=header)
 ```
@@ -108,13 +109,14 @@ response = r.post(url=url, json=data, headers=header)
 import requests as r
 
 
+access_token = ''
 url = 'http://0.0.0.0:8000/api/v1/c3/new_account_balances?self=self'
 data = {
   "exchange_name": "string",
   "instrument_name": "string",
   "label_name": "string"
 }
-header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': '<access_token>'}
+header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': access_token}
 
 response = r.post(url=url, json=data, headers=header)
 ```
@@ -124,13 +126,14 @@ response = r.post(url=url, json=data, headers=header)
 import requests as r
 
 
+access_token = ''
 url = 'http://0.0.0.0:8000/api/v1/c3/new_account_limit_orders?self=self'
 data = {
   "exchange_name": "string",
   "instrument_name": "string",
   "label_name": "string"
 }
-header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': '<access_token>'}
+header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': access_token}
 
 response = r.post(url=url, json=data, headers=header)
 ```
@@ -140,13 +143,14 @@ response = r.post(url=url, json=data, headers=header)
 import requests as r
 
 
+access_token = ''
 url = 'http://0.0.0.0:8000/api/v1/c3/new_account_liquidations?self=self'
 data = {
   "exchange_name": "string",
   "instrument_name": "string",
   "label_name": "string"
 }
-header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': '<access_token>'}
+header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': access_token}
 
 response = r.post(url=url, json=data, headers=header)
 ```
@@ -156,12 +160,13 @@ response = r.post(url=url, json=data, headers=header)
 import requests as r
 
 
+access_token = ''
 url = 'http://0.0.0.0:8000/api/v1/c3/new_whole_market_trades_history?self=self'
 data = {
   "exchange_name": "string",
   "instrument_name": "string"
 }
-header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': '<access_token>'}
+header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': access_token}
 
 response = r.post(url=url, json=data, headers=header)
 ```
@@ -173,6 +178,7 @@ response = r.post(url=url, json=data, headers=header)
 import requests as r
 
 
+access_token = ''
 url = 'http://0.0.0.0:8000/api/v1/d3/new_chain?self=self'
 data = {
   "network_name": "string",
@@ -182,7 +188,7 @@ data = {
   "network_uri": "string",
   "network_api_key": "string"
 }
-header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': '<access_token>'}
+header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': access_token}
 
 response = r.post(url=url, json=data, headers=header)
 ```
@@ -192,6 +198,7 @@ response = r.post(url=url, json=data, headers=header)
 import requests as r
 
 
+access_token = ''
 url = 'http://0.0.0.0:8000/api/v1/d3/new_bids_and_asks?self=self'
 data = {
   "pool_address": "string",
@@ -200,7 +207,7 @@ data = {
   "specification_name": "string",
   "is_reverse": true
 }
-header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': '<access_token>'}
+header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': access_token}
 
 response = r.post(url=url, json=data, headers=header)
 ```
@@ -210,6 +217,7 @@ response = r.post(url=url, json=data, headers=header)
 import requests as r
 
 
+access_token = ''
 url = 'http://0.0.0.0:8000/api/v1/d3/new_hedge_to_borrows?self=self'
 data = {
   "wallet_address": "string",
@@ -219,7 +227,7 @@ data = {
   "protocol_name": "string",
   "specification_name": "string"
 }
-header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': '<access_token>'}
+header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': access_token}
 
 response = r.post(url=url, json=data, headers=header)
 ```
@@ -229,6 +237,7 @@ response = r.post(url=url, json=data, headers=header)
 import requests as r
 
 
+access_token = ''
 url = 'http://0.0.0.0:8000/api/v1/d3/new_hedge_to_supplies?self=self'
 data = {
   "wallet_address": "string",
@@ -238,7 +247,7 @@ data = {
   "protocol_name": "string",
   "specification_name": "string"
 }
-header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': '<access_token>'}
+header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': access_token}
 
 response = r.post(url=url, json=data, headers=header)
 ```
@@ -248,6 +257,7 @@ response = r.post(url=url, json=data, headers=header)
 import requests as r
 
 
+access_token = ''
 url = 'http://0.0.0.0:8000/api/v1/d3/new_wallet_balances?self=self'
 data = {
   "wallet_address": "string",
@@ -255,7 +265,7 @@ data = {
   "network_name": "string",
   "label_name": "string"
 }
-header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': '<access_token>'}
+header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': access_token}
 
 response = r.post(url=url, json=data, headers=header)
 ```
