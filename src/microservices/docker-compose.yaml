@@ -30,7 +30,7 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_HOST: auth_db
+      POSTGRES_HOST: auth-postgres
       POSTGRES_USER: auth_db
       POSTGRES_PASSWORD: auth_db
       POSTGRES_DB: auth_db
@@ -49,7 +49,7 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_HOST: c3_db
+      POSTGRES_HOST: c3-postgres
       POSTGRES_USER: c3_db
       POSTGRES_PASSWORD: c3_db
       POSTGRES_DB: c3_db
@@ -68,7 +68,7 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_HOST: d3_db
+      POSTGRES_HOST: d3-postgres
       POSTGRES_USER: d3_db
       POSTGRES_PASSWORD: d3_db
       POSTGRES_DB: d3_db
