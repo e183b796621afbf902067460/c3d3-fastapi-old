@@ -38,7 +38,7 @@ class D3CBV:
         new_bids_and_asks = service.on_post__new_bids_and_asks(
             pool_address=form.pool_address,
             network_name=form.network_name,
-            protocol_name=form.specification_name,
+            protocol_name=form.protocol_name,
             specification_name=form.specification_name,
             is_reverse=form.is_reverse
         )
