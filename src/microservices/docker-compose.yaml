@@ -88,10 +88,10 @@ services:
     env_file:
       - .env
     environment:
-      CLICKHOUSE_HOST: 0.0.0.0
-      CLICKHOUSE_USER: warehouse-clickhouse
-      CLICKHOUSE_PASSWORD: warehouse-clickhouse
-      CLICKHOUSE_DB: warehouse-clickhouse
+      CLICKHOUSE_HOST: warehouse-clickhouse
+      CLICKHOUSE_USER: dwh_db
+      CLICKHOUSE_PASSWORD: dwh_db
+      CLICKHOUSE_DB: dwh_db
 
       PYTHONPATH: ${PYTHONPATH}:/code/app
     networks:
@@ -158,10 +158,10 @@ services:
     image: clickhouse/clickhouse-server
     environment:
       CLICKHOUSE_HOST: 0.0.0.0
-      CLICKHOUSE_DB: warehouse-clickhouse
-      CLICKHOUSE_USER: warehouse-clickhouse
+      CLICKHOUSE_DB: dwh_db
+      CLICKHOUSE_USER: dwh_db
       CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
-      CLICKHOUSE_PASSWORD: warehouse-clickhouse
+      CLICKHOUSE_PASSWORD: dwh_db
     volumes:
       - ./clickhouse-data:/var/lib/clickhouse/
     ports:
