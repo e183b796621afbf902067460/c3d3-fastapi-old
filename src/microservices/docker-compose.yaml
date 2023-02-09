@@ -19,6 +19,7 @@ services:
       - auth-service
       - c3-service
       - d3-service
+      - warehouse-service
     networks:
       - c3d3_network
 
@@ -79,6 +80,23 @@ services:
     depends_on:
       - d3-postgres
 
+  warehouse-service:
+    command: python3 app/views/view.py
+    build:
+      context: ./warehouse
+      dockerfile: Dockerfile
+    environment:
+      CLICKHOUSE_HOST: warehouse-clickhouse
+      CLICKHOUSE_USER: dwh_db
+      CLICKHOUSE_PASSWORD: dwh_db
+      CLICKHOUSE_DB: dwh_db
+
+      PYTHONPATH: ${PYTHONPATH}:/code/app
+    depends_on:
+      - warehouse-clickhouse
+    networks:
+      - c3d3_network
+
   auth-postgres:
     image: postgres:13
     environment:
@@ -111,7 +129,7 @@ services:
     networks:
       - c3d3_network
     ports:
-      - '5432:5432'
+      - '5433:5432'
     volumes:
       - ./c3-postgres:/var/lib/postgresql/data
 
@@ -130,9 +148,27 @@ services:
     networks:
       - c3d3_network
     ports:
-      - '5433:5432'
+      - '5434:5432'
     volumes:
       - ./d3-postgres:/var/lib/postgresql/data
+
+  warehouse-clickhouse:
+    image: clickhouse/clickhouse-server
+    environment:
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+      CLICKHOUSE_HOST: 0.0.0.0
+      CLICKHOUSE_DB: dwh_db
+      CLICKHOUSE_USER: dwh_db
+      CLICKHOUSE_PASSWORD: dwh_db
+    volumes:
+      - ./clickhouse-data:/var/lib/clickhouse/
+    ports:
+      - '8123:8123'
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://0.0.0.0:8123/ping || exit 1
+    restart: always
+    networks:
+      - c3d3_network
 
 networks:
   c3d3_network:
