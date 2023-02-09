@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Text, Float, text
 from clickhouse_sqlalchemy import engines
-from clickhouse_sqlalchemy.types.common import DateTime, UUID
+from clickhouse_sqlalchemy.types.common import DateTime, UUID, Nullable
 from sqlalchemy.ext.declarative import declared_attr
 from fastapi_utils.camelcase import camel2snake
 
@@ -24,7 +24,7 @@ class pitBigTableAccountBalances(Base):
     h_exchange_name = Column(Text)
     h_symbol_name = Column(Text)
 
-    pit_current_price = Column(Float)
-    pit_qty = Column(Float)
+    pit_current_price = Column(Nullable(Float))
+    pit_qty = Column(Nullable(Float))
 
     pit_ts = Column(DateTime)

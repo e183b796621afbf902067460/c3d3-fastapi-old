@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Text, Float, text
 from clickhouse_sqlalchemy import engines
-from clickhouse_sqlalchemy.types.common import DateTime, UUID
+from clickhouse_sqlalchemy.types.common import DateTime, UUID, Nullable
 from sqlalchemy.ext.declarative import declared_attr
 from fastapi_utils.camelcase import camel2snake
 
@@ -23,8 +23,8 @@ class pitBigTableWholeMarketTradesHistory(Base):
     h_exchange_name = Column(Text)
     h_ticker_name = Column(Text)
 
-    pit_price = Column(Float)
-    pit_qty = Column(Float)
-    pit_side = Column(Text)
+    pit_price = Column(Nullable(Float))
+    pit_qty = Column(Nullable(Float))
+    pit_side = Column(Nullable(Text))
 
     pit_ts = Column(DateTime)

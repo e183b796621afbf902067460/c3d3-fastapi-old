@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Text, Float, text
 from clickhouse_sqlalchemy import engines
-from clickhouse_sqlalchemy.types.common import DateTime, UUID
+from clickhouse_sqlalchemy.types.common import DateTime, UUID, Nullable
 from sqlalchemy.ext.declarative import declared_attr
 from fastapi_utils.camelcase import camel2snake
 
@@ -25,8 +25,8 @@ class pitBigTableWalletBalancesGas(Base):
     h_native_chain_token = Column(Text)
     h_network_name = Column(Text)
 
-    pit_qty = Column(Float)
-    pit_price = Column(Float)
-    pit_symbol = Column(Text)
+    pit_qty = Column(Nullable(Float))
+    pit_price = Column(Nullable(Float))
+    pit_symbol = Column(Nullable(Text))
 
     pit_ts = Column(DateTime)
