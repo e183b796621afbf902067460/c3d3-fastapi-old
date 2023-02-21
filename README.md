@@ -155,22 +155,6 @@ header = {'accept': 'application/json', 'Content-Type': 'application/json', 'aut
 response = r.post(url=url, json=data, headers=header)
 ```
 
-- `/api/v1/c3/new_whole_market_trades_history`
-```python
-import requests as r
-
-
-access_token = ''
-url = 'http://0.0.0.0:8000/api/v1/c3/new_whole_market_trades_history?self=self'
-data = {
-  "exchange_name": "string",
-  "instrument_name": "string"
-}
-header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': access_token}
-
-response = r.post(url=url, json=data, headers=header)
-```
-
 ### d3/
 
 - `/api/v1/d3/new_chain`
@@ -187,25 +171,6 @@ data = {
   "block_limit": 0,
   "network_uri": "string",
   "network_api_key": "string"
-}
-header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': access_token}
-
-response = r.post(url=url, json=data, headers=header)
-```
-
-- `/api/v1/d3/new_bids_and_asks`
-```python
-import requests as r
-
-
-access_token = ''
-url = 'http://0.0.0.0:8000/api/v1/d3/new_bids_and_asks?self=self'
-data = {
-  "pool_address": "string",
-  "network_name": "string",
-  "protocol_name": "string",
-  "specification_name": "string",
-  "is_reverse": true
 }
 header = {'accept': 'application/json', 'Content-Type': 'application/json', 'authorization': access_token}
 
